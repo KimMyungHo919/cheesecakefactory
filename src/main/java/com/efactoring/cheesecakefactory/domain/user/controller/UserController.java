@@ -1,7 +1,10 @@
 package com.efactoring.cheesecakefactory.domain.user.controller;
 
 import com.efactoring.cheesecakefactory.domain.user.dto.*;
+import com.efactoring.cheesecakefactory.domain.user.entity.User;
 import com.efactoring.cheesecakefactory.domain.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,8 +26,16 @@ public class UserController {
 
     // 로그인
     @PostMapping("/login")
-    public LoginResponseDto login(@RequestBody LoginRequestDto dto) {
-        return null;
+    public LoginResponseDto login(@RequestBody LoginRequestDto dto, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null && session.getAttribute("user") != null) {
+            throw new IllegalArgumentException("이미 로그인된 사용자입니다.");
+        }
+
+        User user = userService.loginUser(dto.getEmail(), dto.getPassword());
+        session = request.getSession(true);
+        session.setAttribute("user", user);
+        return new LoginResponseDto(user);
     }
 
     // 로그아웃

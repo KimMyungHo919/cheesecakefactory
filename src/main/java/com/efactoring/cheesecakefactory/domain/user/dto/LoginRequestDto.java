@@ -1,4 +1,24 @@
 package com.efactoring.cheesecakefactory.domain.user.dto;
 
-public class LoginRequestDto {
+import com.efactoring.cheesecakefactory.domain.base.BaseEntity;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class LoginRequestDto extends BaseEntity {
+
+    @NotBlank
+    private final String email;
+
+    @NotBlank
+    @Size(min = 8,max = 15)
+    private final String password;
+
+    public LoginRequestDto(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 }

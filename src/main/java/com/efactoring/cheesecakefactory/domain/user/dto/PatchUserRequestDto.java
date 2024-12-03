@@ -1,4 +1,6 @@
 package com.efactoring.cheesecakefactory.domain.user.dto;
 
-public class PatchUserRequestDto {
+import com.efactoring.cheesecakefactory.domain.base.BaseEntity;
+
+public class PatchUserRequestDto extends BaseEntity {
 }
