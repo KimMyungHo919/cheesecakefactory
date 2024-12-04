@@ -40,14 +40,17 @@ public class UserController {
 
     // 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout() {
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        session.invalidate();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 유저정보수정
     @PatchMapping("/{id}")
     public PatchUserResponseDto patchUser(@PathVariable Long id, @RequestBody PatchUserRequestDto dto) {
-        return null;
+        User user = userService.patchUser(id, dto);
+        return new PatchUserResponseDto(user);
     }
 
     // 본인정보조회

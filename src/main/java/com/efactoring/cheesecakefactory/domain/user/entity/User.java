@@ -18,12 +18,19 @@ public class User extends BaseEntity {
     private Long id;
 
     @NotBlank
+    private String name;
+
+    @NotBlank
     @Column(name = "email", unique = true)
     private String email;
 
     @NotBlank
     @Column(name = "password")
     private String password;
+
+    @NotBlank
+    @Column(name = "address")
+    private String address;
 
     @NotBlank
     @Column(name = "role")
@@ -35,9 +42,11 @@ public class User extends BaseEntity {
 
     public User() { }
 
-    public User(String email, String password, String role, String status) {
+    public User(String name, String email, String password, String address, String role, String status) {
+        this.name = name;
         this.email = email;
         this.password = password;
+        this.address = address;
         this.role = role;
         this.status = status;
     }

@@ -14,7 +14,9 @@ import java.time.LocalDateTime;
 public class SignupResponseDto extends BaseEntity {
 
     private Long id;
+    private String name;
     private String email;
+    private String address;
     private String status;
     private String role;
     private LocalDateTime createdAt;
@@ -22,7 +24,9 @@ public class SignupResponseDto extends BaseEntity {
 
     public SignupResponseDto(User user) {
         this.id = user.getId();
+        this.name = user.getName();
         this.email = user.getEmail();
+        this.address = user.getAddress();
         this.role = user.getRole();
         this.status = user.getStatus();
         this.createdAt = user.getCreatedAt();

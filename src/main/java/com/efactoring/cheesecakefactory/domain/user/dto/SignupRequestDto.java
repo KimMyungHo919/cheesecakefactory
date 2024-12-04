@@ -19,7 +19,10 @@ public class SignupRequestDto extends BaseEntity {
     private String password;
 
     @NotBlank
-    private String status; // USER , OWNER
+    private String address;
+
+    @NotBlank
+    private String name;
 
     @NotBlank
     private String role;

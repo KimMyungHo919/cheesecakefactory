@@ -1,5 +1,7 @@
 package com.efactoring.cheesecakefactory.domain.user.service;
 
+import com.efactoring.cheesecakefactory.domain.user.dto.PatchUserRequestDto;
+import com.efactoring.cheesecakefactory.domain.user.dto.PatchUserResponseDto;
 import com.efactoring.cheesecakefactory.domain.user.dto.SignupRequestDto;
 import com.efactoring.cheesecakefactory.domain.user.dto.SignupResponseDto;
 import com.efactoring.cheesecakefactory.domain.user.entity.User;
@@ -22,10 +24,12 @@ public class UserService {
         }
 
         User user = new User();
+        user.setName(dto.getName());
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setStatus(dto.getStatus());
+        user.setStatus("1");
         user.setRole(dto.getRole());
+        user.setAddress(dto.getAddress());
 
         userRepository.save(user);
 
@@ -40,6 +44,22 @@ public class UserService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
+
+        return user;
+    }
+
+    // 유저 정보수정
+    public User patchUser(Long id, PatchUserRequestDto dto) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("없는아이디"));
+
+        if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) { // 앞에가 평문비밀번호, 뒤에가 암호화비밀번호
+            throw new IllegalArgumentException("비밀번호 불일치");
+        }
+
+        user.setName(dto.getName());
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+
+        userRepository.save(user);
 
         return user;
     }
