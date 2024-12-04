@@ -16,6 +16,8 @@ public class UserInfoResponseDto {
 
     private String name;
 
+    private String status;
+
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
@@ -23,6 +25,7 @@ public class UserInfoResponseDto {
         this.id = user.getId();;
         this.email = user.getEmail();
         this.name = user.getName();
+        this.status = user.getStatus();
         this.createdAt = user.getCreatedAt();
         this.modifiedAt = user.getModifiedAt();
     }

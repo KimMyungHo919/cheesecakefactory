@@ -64,9 +64,10 @@ public class UserController {
     }
 
     // 회원탈퇴
-    @PatchMapping("/{id}/delete")
-    public String userDelete(@PathVariable Long id) {
-        return null;
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<Void> userDelete(@PathVariable Long id, HttpServletRequest request, @RequestBody deleteUserRequestDto dto) {
+        userService.userStatusChange(id, request, dto.getPassword());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

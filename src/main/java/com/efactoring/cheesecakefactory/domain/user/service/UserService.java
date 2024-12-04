@@ -1,9 +1,6 @@
 package com.efactoring.cheesecakefactory.domain.user.service;
 
-import com.efactoring.cheesecakefactory.domain.user.dto.PatchUserRequestDto;
-import com.efactoring.cheesecakefactory.domain.user.dto.SignupRequestDto;
-import com.efactoring.cheesecakefactory.domain.user.dto.SignupResponseDto;
-import com.efactoring.cheesecakefactory.domain.user.dto.UserInfoResponseDto;
+import com.efactoring.cheesecakefactory.domain.user.dto.*;
 import com.efactoring.cheesecakefactory.domain.user.entity.User;
 import com.efactoring.cheesecakefactory.domain.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,11 +22,15 @@ public class UserService {
             throw new IllegalArgumentException("이미 존재하는 이메일");
         }
 
+        if (!dto.getRole().equals("USER") && !dto.getRole().equals("OWNER")) {
+            throw new IllegalArgumentException("유저의 ROLE은 USER 혹은 OWNER만 가능합니다.");
+        }
+
         User user = new User();
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setStatus("1");
+        user.setStatus("Active");
         user.setRole(dto.getRole());
         user.setAddress(dto.getAddress());
 
@@ -66,18 +67,46 @@ public class UserService {
         return user;
     }
 
+    // 유저 정보조회. 자신만가능.
     public UserInfoResponseDto getUserInfo(Long id, HttpServletRequest request) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당아이디없음"));
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
             throw new IllegalArgumentException("로그인이 안되어있습니다.");
         }
-        User user2 = (User) session.getAttribute("user");
+        User loginUser = (User) session.getAttribute("user");
 
-        if (!user.getEmail().equals(user2.getEmail())) {
+        if (!user.getEmail().equals(loginUser.getEmail())) {
             throw new IllegalArgumentException("본인정보만 조회가능");
         }
 
         return new UserInfoResponseDto(user);
+    }
+
+    // 유저탈퇴
+    public void userStatusChange(Long id, HttpServletRequest request, String password) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("일치하는 유저없음"));
+
+        HttpSession session = request.getSession(false);
+
+        if (session == null || session.getAttribute("user") == null) {
+            throw new IllegalArgumentException("로그아웃상태입니다.");
+        }
+        User loginUser = (User) session.getAttribute("user");
+
+        if (!passwordEncoder.matches(password, loginUser.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
+        }
+
+        if (!user.getEmail().equals(loginUser.getEmail())) {
+            throw new IllegalArgumentException("본인만 탈퇴가능합니다.");
+        }
+
+        if ("Deleted".equals(user.getStatus())) {
+            throw new IllegalArgumentException("이미 탈퇴상태인 유저입니다.");
+        }
+
+        user.setStatus("Deleted");
+        userRepository.save(user);
     }
 }
