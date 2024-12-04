@@ -42,6 +42,10 @@ public class UserController {
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
+
+        if (session == null || session.getAttribute("user") == null) {
+            throw new IllegalArgumentException("이미 로그아웃상태");
+        }
         session.invalidate();
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -53,10 +57,10 @@ public class UserController {
         return new PatchUserResponseDto(user);
     }
 
-    // 본인정보조회
+    // id 정보조회
     @GetMapping("/{id}")
-    public String usernamejo(@PathVariable Long id) {
-        return null;
+    public UserInfoResponseDto getUserInfo(@PathVariable Long id, HttpServletRequest request) {
+        return userService.getUserInfo(id, request);
     }
 
     // 회원탈퇴

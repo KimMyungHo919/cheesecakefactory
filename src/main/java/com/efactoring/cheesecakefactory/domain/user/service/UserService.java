@@ -1,11 +1,13 @@
 package com.efactoring.cheesecakefactory.domain.user.service;
 
 import com.efactoring.cheesecakefactory.domain.user.dto.PatchUserRequestDto;
-import com.efactoring.cheesecakefactory.domain.user.dto.PatchUserResponseDto;
 import com.efactoring.cheesecakefactory.domain.user.dto.SignupRequestDto;
 import com.efactoring.cheesecakefactory.domain.user.dto.SignupResponseDto;
+import com.efactoring.cheesecakefactory.domain.user.dto.UserInfoResponseDto;
 import com.efactoring.cheesecakefactory.domain.user.entity.User;
 import com.efactoring.cheesecakefactory.domain.user.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -62,5 +64,20 @@ public class UserService {
         userRepository.save(user);
 
         return user;
+    }
+
+    public UserInfoResponseDto getUserInfo(Long id, HttpServletRequest request) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당아이디없음"));
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            throw new IllegalArgumentException("로그인이 안되어있습니다.");
+        }
+        User user2 = (User) session.getAttribute("user");
+
+        if (!user.getEmail().equals(user2.getEmail())) {
+            throw new IllegalArgumentException("본인정보만 조회가능");
+        }
+
+        return new UserInfoResponseDto(user);
     }
 }
