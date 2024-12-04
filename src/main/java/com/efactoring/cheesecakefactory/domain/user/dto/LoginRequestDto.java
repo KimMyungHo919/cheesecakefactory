@@ -14,7 +14,6 @@ public class LoginRequestDto extends BaseEntity {
     private final String email;
 
     @NotBlank
-    @Size(min = 8,max = 15)
     private final String password;
 
     public LoginRequestDto(String email, String password) {

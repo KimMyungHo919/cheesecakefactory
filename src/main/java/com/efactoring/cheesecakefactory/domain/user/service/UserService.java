@@ -52,8 +52,18 @@ public class UserService {
     }
 
     // 유저 정보수정
-    public User patchUser(Long id, PatchUserRequestDto dto) {
+    public User patchUser(Long id, PatchUserRequestDto dto, HttpServletRequest request) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("없는아이디"));
+
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            throw new IllegalArgumentException("로그인이 안되어있습니다.");
+        }
+        User loginUser = (User) session.getAttribute("user");
+
+        if (!user.getEmail().equals(loginUser.getEmail())) {
+            throw new IllegalArgumentException("본인정보만 수정가능");
+        }
 
         if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) { // 앞에가 평문비밀번호, 뒤에가 암호화비밀번호
             throw new IllegalArgumentException("비밀번호 불일치");

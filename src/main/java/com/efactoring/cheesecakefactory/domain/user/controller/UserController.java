@@ -52,8 +52,8 @@ public class UserController {
 
     // 유저정보수정
     @PatchMapping("/{id}")
-    public PatchUserResponseDto patchUser(@PathVariable Long id, @RequestBody PatchUserRequestDto dto) {
-        User user = userService.patchUser(id, dto);
+    public PatchUserResponseDto patchUser(@PathVariable Long id, @RequestBody @Valid PatchUserRequestDto dto, HttpServletRequest request) {
+        User user = userService.patchUser(id, dto, request);
         return new PatchUserResponseDto(user);
     }
 
