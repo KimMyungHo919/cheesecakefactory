@@ -17,6 +17,7 @@ public class Menu extends BaseEntity {
     private String name;
     private long price;
     private String status;
+    private Boolean isActive;
 
 //    @ManyToOne
 //    private Store store;
@@ -25,6 +26,7 @@ public class Menu extends BaseEntity {
         this.name = name;
         this.price = price;
         this.status = status;
+        this.isActive = true;
     }
 
     public Menu() {
