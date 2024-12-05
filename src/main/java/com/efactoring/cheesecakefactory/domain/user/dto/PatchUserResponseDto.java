@@ -12,19 +12,21 @@ import java.time.LocalDateTime;
 public class PatchUserResponseDto extends BaseEntity {
 
     private Long id;
-
-    private String email;
-
     private String name;
-
+    private String email;
+    private String address;
+    private String status;
+    private String role;
     private LocalDateTime createdAt;
-
     private LocalDateTime modifiedAt;
 
     public PatchUserResponseDto(User user) {
         this.id = user.getId();
-        this.email = user.getEmail();
         this.name = user.getName();
+        this.email = user.getEmail();
+        this.address = user.getAddress();
+        this.role = user.getRole();
+        this.status = user.getStatus();
         this.createdAt = user.getCreatedAt();
         this.modifiedAt = user.getModifiedAt();
     }

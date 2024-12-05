@@ -1,12 +1,12 @@
 package com.efactoring.cheesecakefactory.domain.user.service;
 
+import com.efactoring.cheesecakefactory.domain.user.config.PasswordEncoder;
 import com.efactoring.cheesecakefactory.domain.user.dto.*;
 import com.efactoring.cheesecakefactory.domain.user.entity.User;
 import com.efactoring.cheesecakefactory.domain.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -43,6 +43,10 @@ public class UserService {
     public User loginUser(String email, String password) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 이메일입니다."));
+
+        if (user.getStatus().equals("Deleted")) {
+            throw new IllegalArgumentException("탈퇴한 회원입니다.");
+        }
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
@@ -118,5 +122,6 @@ public class UserService {
 
         user.setStatus("Deleted");
         userRepository.save(user);
+        session.invalidate();
     }
 }

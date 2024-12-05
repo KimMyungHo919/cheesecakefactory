@@ -9,21 +9,21 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class LoginResponseDto extends BaseEntity {
+public class LoginResponseDto {
 
     private Long id;
+    private String name;
     private String email;
-    private String role;
+    private String address;
     private String status;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
+    private String role;
 
     public LoginResponseDto(User user) {
         this.id = user.getId();
+        this.name = user.getName();
         this.email = user.getEmail();
+        this.address = user.getAddress();
         this.role = user.getRole();
         this.status = user.getStatus();
-        this.createdAt = user.getCreatedAt();
-        this.modifiedAt = user.getModifiedAt();
     }
 }
