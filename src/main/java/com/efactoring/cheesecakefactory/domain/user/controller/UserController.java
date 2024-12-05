@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/users")
@@ -29,7 +30,7 @@ public class UserController {
     public LoginResponseDto login(@RequestBody LoginRequestDto dto, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null && session.getAttribute("user") != null) {
-            throw new IllegalArgumentException("이미 로그인된 사용자입니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 로그인된 사용자입니다.");
         }
 
         User user = userService.loginUser(dto.getEmail(), dto.getPassword());
@@ -44,7 +45,7 @@ public class UserController {
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute("user") == null) {
-            throw new IllegalArgumentException("이미 로그아웃상태");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 로그아웃된 사용자입니다.");
         }
         session.invalidate();
         return new ResponseEntity<>(HttpStatus.OK);

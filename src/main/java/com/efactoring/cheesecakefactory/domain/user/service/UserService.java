@@ -7,7 +7,9 @@ import com.efactoring.cheesecakefactory.domain.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -21,15 +23,15 @@ public class UserService {
 
         HttpSession session = request.getSession(false);
         if (session != null) {
-            throw new IllegalArgumentException("로그아웃 먼저 해주세요!");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "로그아웃 먼저 해주세요.");
         }
 
         if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("이미 존재하는 이메일");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다.");
         }
 
         if (!dto.getRole().equals("USER") && !dto.getRole().equals("OWNER")) {
-            throw new IllegalArgumentException("유저의 ROLE은 USER 혹은 OWNER만 가능합니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "유저의 ROLE은 USER 혹은 OWNER만 가능합니다.");
         }
 
         User user = new User();
@@ -55,7 +57,7 @@ public class UserService {
         }
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호를 다시 확인해주세요.");
         }
 
         return user;
@@ -67,20 +69,20 @@ public class UserService {
 
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
-            throw new IllegalArgumentException("로그인이 안되어있습니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "로그인을 먼저 해주세요.");
         }
         User loginUser = (User) session.getAttribute("user");
 
         if (!user.getEmail().equals(loginUser.getEmail())) {
-            throw new IllegalArgumentException("본인정보만 수정가능");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "본인정보만 수정가능합니다.");
         }
 
         if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) { // 앞에가 평문비밀번호, 뒤에가 암호화비밀번호
-            throw new IllegalArgumentException("비밀번호 불일치");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호를 다시 확인해주세요.");
         }
 
         if (passwordEncoder.matches(dto.getNewPassword(), user.getPassword())) { // 앞에가 평문비밀번호, 뒤에가 암호화비밀번호
-            throw new IllegalArgumentException("현재비밀번호와 수정할 비밀번호가 같습니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "현재 비밀번호와 수정할 비밀번호가 같습니다.");
         }
 
         user.setName(dto.getName());
@@ -96,12 +98,12 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당아이디없음"));
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
-            throw new IllegalArgumentException("로그인이 안되어있습니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "로그인을 먼저 해주세요.");
         }
         User loginUser = (User) session.getAttribute("user");
 
         if (!user.getEmail().equals(loginUser.getEmail())) {
-            throw new IllegalArgumentException("본인정보만 조회가능");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "본인정보만 조회 가능합니다.");
         }
 
         return new UserInfoResponseDto(user);
@@ -114,16 +116,16 @@ public class UserService {
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute("user") == null) {
-            throw new IllegalArgumentException("로그아웃상태입니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "로그인을 먼저 해주세요.");
         }
         User loginUser = (User) session.getAttribute("user");
 
         if (!passwordEncoder.matches(password, loginUser.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호를 다시 확인해주세요.");
         }
 
         if (!user.getEmail().equals(loginUser.getEmail())) {
-            throw new IllegalArgumentException("본인만 탈퇴가능합니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "본인만 탈퇴 가능합니다.");
         }
 
         if ("Deleted".equals(user.getStatus())) {
