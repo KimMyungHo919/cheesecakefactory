@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public class OrderStatusRequestDto {
-    private final String status;
+    private final Long menuId;
 
-    public OrderStatusRequestDto(String status) {
-        this.status = status;
+    public OrderStatusRequestDto(Long menuId) {
+        this.menuId = menuId;
     }
 }
