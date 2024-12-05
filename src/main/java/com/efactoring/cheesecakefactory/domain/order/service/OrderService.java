@@ -63,7 +63,7 @@ public class OrderService {
     public OrderResponseDto updateOrder(Long id, OrderStatusRequestDto orderStatusRequestDto, User user) {
         Orders orders = orderRepository.findByIdOrElseThrow(id);
 
-        if (Objects.equals(user.getRole(), "OWNER")) {
+        if (!Objects.equals(user.getRole(), "OWNER")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "owner 유저만 주문 상태를 변경 할 수 있습니다.");
         } else if (!Objects.equals(orders.getStore().getUser().getId(), user.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 가게의 주문만 변경이 가능합니다.");
