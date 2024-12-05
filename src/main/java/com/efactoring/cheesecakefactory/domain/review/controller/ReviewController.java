@@ -19,10 +19,10 @@ import java.util.List;
 public class ReviewController {
     private final ReviewService reviewService;
 
-    @PostMapping("orders/{oderId}/reviews")
-    public ResponseEntity<ReviewResponseDto> saveReview(@PathVariable("oderId") final Long oderId, @Valid @RequestBody ReviewRequestDto requestDto) {
+    @PostMapping("orders/{orderId}/reviews")
+    public ResponseEntity<ReviewResponseDto> saveReview(@PathVariable("orderId") final Long orderId, @Valid @RequestBody ReviewRequestDto requestDto) {
 
-        ReviewResponseDto responseDto = reviewService.saveReview(oderId,requestDto);
+        ReviewResponseDto responseDto = reviewService.saveReview(orderId,requestDto);
 
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }

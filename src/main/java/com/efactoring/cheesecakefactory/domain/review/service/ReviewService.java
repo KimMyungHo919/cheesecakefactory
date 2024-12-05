@@ -18,7 +18,7 @@ public class ReviewService {
 
     //리뷰저장
     @Transactional
-    public ReviewResponseDto saveReview(Long oderId, ReviewRequestDto requestDto) {
+    public ReviewResponseDto saveReview(Long orderId, ReviewRequestDto requestDto) {
        // Orders orders = orderRepository.findByIdOrElseThrow(orderId);
         Review review = new Review();
         Review saveReview = reviewRepository.save(review);
@@ -37,4 +37,5 @@ public class ReviewService {
     public List<ReviewResponseDto> getReviewsByStore(Long storeId) {
         return  reviewRepository.findAllByStoreId(storeId);
     }
+
 }
