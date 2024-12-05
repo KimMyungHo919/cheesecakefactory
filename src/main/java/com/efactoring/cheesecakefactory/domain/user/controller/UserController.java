@@ -1,7 +1,6 @@
 package com.efactoring.cheesecakefactory.domain.user.controller;
 
 import com.efactoring.cheesecakefactory.domain.user.dto.*;
-import com.efactoring.cheesecakefactory.domain.user.entity.User;
 import com.efactoring.cheesecakefactory.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -66,7 +65,7 @@ public class UserController {
 
     // 회원탈퇴
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Void> userDelete(@PathVariable Long id, HttpServletRequest request, @RequestBody deleteUserRequestDto dto) {
+    public ResponseEntity<Void> userDelete(@PathVariable Long id, HttpServletRequest request, @RequestBody DeleteUserRequestDto dto) {
         userService.userStatusChange(id, request, dto.getPassword());
 
         return new ResponseEntity<>(HttpStatus.OK);
