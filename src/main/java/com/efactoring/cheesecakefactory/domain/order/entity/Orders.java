@@ -3,6 +3,7 @@ package com.efactoring.cheesecakefactory.domain.order.entity;
 import com.efactoring.cheesecakefactory.domain.base.BaseEntity;
 import com.efactoring.cheesecakefactory.domain.menu.entity.Menu;
 import com.efactoring.cheesecakefactory.domain.store.entity.Store;
+import com.efactoring.cheesecakefactory.domain.user.entity.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,15 +31,16 @@ public class Orders extends BaseEntity {
     @JoinColumn(name = "store_id")
     private Store store;
 
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public Orders(int quantity, Long totalPrice, String status, Menu menu, Store store) {
+    public Orders(int quantity, Long totalPrice, String status, Menu menu, User user, Store store) {
         this.quantity = quantity;
         this.totalPrice = totalPrice;
         this.status = status;
         this.menu = menu;
+        this.user = user;
         this.store = store;
     }
 

@@ -1,17 +1,18 @@
 package com.efactoring.cheesecakefactory.domain.order.dto;
 
-import com.efactoring.cheesecakefactory.domain.order.entity.Orders;
 import lombok.Getter;
+
+// todo: status enum 형태로 바꾸기
 
 @Getter
 public class OrderRequestDto {
+    private final Long storeId;
+    private final Long menuId;
     private final int quantity;
-    private final Long totalPrice;
-    private final String status;
 
-    public OrderRequestDto(Orders orders) {
-        this.quantity = orders.getQuantity();
-        this.totalPrice = orders.getTotalPrice();
-        this.status = orders.getStatus();
+    public OrderRequestDto(Long storeId, Long menuId, int quantity, String status) {
+        this.storeId = storeId;
+        this.menuId = menuId;
+        this.quantity = quantity;
     }
 }
