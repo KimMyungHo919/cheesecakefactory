@@ -29,7 +29,10 @@ public class ReviewController {
 
     //가게의 리뷰 전체조회
     @GetMapping("orders/{storeId}/reviews")
-    public List<ReviewResponseDto> findAllByStoreId(@PathVariable("storeId") final Long storeId) {
-        return reviewService.getReviewsByStore(storeId);
+    public List<ReviewResponseDto> findAllByStoreId(@PathVariable("storeId") final Long storeId,
+                                                    @RequestParam(value = "minRating", required = false) Integer minRating,
+                                                    @RequestParam(value = "maxRating", required = false) Integer maxRating
+                                                    ) {
+        return reviewService.getReviewsByStore(storeId,minRating,maxRating);
     }
 }

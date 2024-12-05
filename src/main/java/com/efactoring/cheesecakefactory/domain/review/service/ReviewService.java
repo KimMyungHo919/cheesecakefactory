@@ -34,8 +34,8 @@ public class ReviewService {
     }
 
     //가게 리뷰 전체조회
-    public List<ReviewResponseDto> getReviewsByStore(Long storeId) {
-        return  reviewRepository.findAllByStoreId(storeId);
+    public List<ReviewResponseDto> getReviewsByStore(Long storeId,Integer minRating, Integer maxRating) {
+        return  reviewRepository.findAllByStoreIdWithFilters(storeId,minRating,maxRating);
     }
 
 }
