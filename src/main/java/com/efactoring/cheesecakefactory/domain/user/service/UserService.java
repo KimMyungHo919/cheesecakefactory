@@ -48,9 +48,14 @@ public class UserService {
     }
 
     // 유저 로그인
-    public User loginUser(String email, String password) {
+    public LoginResponseDto loginUser(String email, String password, HttpServletRequest request) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 이메일입니다."));
+
+        HttpSession session = request.getSession(false);
+        if (session != null && session.getAttribute("user") != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 로그인된 사용자입니다.");
+        }
 
         if (user.getStatus().equals("Deleted")) {
             throw new IllegalArgumentException("탈퇴한 회원입니다.");
@@ -60,11 +65,14 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호를 다시 확인해주세요.");
         }
 
-        return user;
+        session = request.getSession(true);
+        session.setAttribute("user", user);
+
+        return new LoginResponseDto(user);
     }
 
     // 유저 정보수정
-    public User patchUser(Long id, PatchUserRequestDto dto, HttpServletRequest request) {
+    public PatchUserResponseDto patchUser(Long id, PatchUserRequestDto dto, HttpServletRequest request) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("없는아이디"));
 
         HttpSession session = request.getSession(false);
@@ -90,7 +98,7 @@ public class UserService {
 
         userRepository.save(user);
 
-        return user;
+        return new PatchUserResponseDto(user);
     }
 
     // 유저 정보조회. 자신만가능.

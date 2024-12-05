@@ -22,21 +22,17 @@ public class UserController {
     // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<SignupResponseDto> registerUser(@RequestBody @Valid SignupRequestDto dto, HttpServletRequest request) {
-        return new ResponseEntity<>(userService.registerUser(dto, request), HttpStatus.CREATED);
+        SignupResponseDto signupUser = userService.registerUser(dto, request);
+
+        return new ResponseEntity<>(signupUser, HttpStatus.CREATED);
     }
 
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto dto, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("user") != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 로그인된 사용자입니다.");
-        }
+        LoginResponseDto loginUser = userService.loginUser(dto.getEmail(), dto.getPassword(), request);
 
-        User user = userService.loginUser(dto.getEmail(), dto.getPassword());
-        session = request.getSession(true);
-        session.setAttribute("user", user);
-        return new ResponseEntity<>(new LoginResponseDto(user), HttpStatus.OK);
+        return new ResponseEntity<>(loginUser, HttpStatus.OK);
     }
 
     // 로그아웃
@@ -48,26 +44,31 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 로그아웃된 사용자입니다.");
         }
         session.invalidate();
+
         return new ResponseEntity<>("로그아웃 성공!",HttpStatus.OK);
     }
 
     // 유저정보수정
     @PatchMapping("/{id}")
     public ResponseEntity<PatchUserResponseDto> patchUser(@PathVariable Long id, @RequestBody @Valid PatchUserRequestDto dto, HttpServletRequest request) {
-        User user = userService.patchUser(id, dto, request);
-        return new ResponseEntity<>(new PatchUserResponseDto(user), HttpStatus.OK);
+        PatchUserResponseDto patchUser = userService.patchUser(id, dto, request);
+
+        return new ResponseEntity<>(patchUser, HttpStatus.OK);
     }
 
     // id 정보조회
     @GetMapping("/{id}")
     public ResponseEntity<UserInfoResponseDto> getUserInfo(@PathVariable Long id, HttpServletRequest request) {
-        return new ResponseEntity<>(userService.getUserInfo(id, request), HttpStatus.OK);
+        UserInfoResponseDto userInfo = userService.getUserInfo(id, request);
+
+        return new ResponseEntity<>(userInfo, HttpStatus.OK);
     }
 
     // 회원탈퇴
     @PatchMapping("/{id}/status")
     public ResponseEntity<Void> userDelete(@PathVariable Long id, HttpServletRequest request, @RequestBody deleteUserRequestDto dto) {
         userService.userStatusChange(id, request, dto.getPassword());
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
