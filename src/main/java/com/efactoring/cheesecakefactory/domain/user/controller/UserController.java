@@ -21,13 +21,13 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/signup")
-    public SignupResponseDto registerUser(@RequestBody @Valid SignupRequestDto dto, HttpServletRequest request) {
-        return userService.registerUser(dto, request);
+    public ResponseEntity<SignupResponseDto> registerUser(@RequestBody @Valid SignupRequestDto dto, HttpServletRequest request) {
+        return new ResponseEntity<>(userService.registerUser(dto, request), HttpStatus.CREATED);
     }
 
     // 로그인
     @PostMapping("/login")
-    public LoginResponseDto login(@RequestBody LoginRequestDto dto, HttpServletRequest request) {
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto dto, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null && session.getAttribute("user") != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 로그인된 사용자입니다.");
@@ -36,32 +36,32 @@ public class UserController {
         User user = userService.loginUser(dto.getEmail(), dto.getPassword());
         session = request.getSession(true);
         session.setAttribute("user", user);
-        return new LoginResponseDto(user);
+        return new ResponseEntity<>(new LoginResponseDto(user), HttpStatus.OK);
     }
 
     // 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletRequest request) {
+    public ResponseEntity<String> logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute("user") == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 로그아웃된 사용자입니다.");
         }
         session.invalidate();
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("로그아웃 성공!",HttpStatus.OK);
     }
 
     // 유저정보수정
     @PatchMapping("/{id}")
-    public PatchUserResponseDto patchUser(@PathVariable Long id, @RequestBody @Valid PatchUserRequestDto dto, HttpServletRequest request) {
+    public ResponseEntity<PatchUserResponseDto> patchUser(@PathVariable Long id, @RequestBody @Valid PatchUserRequestDto dto, HttpServletRequest request) {
         User user = userService.patchUser(id, dto, request);
-        return new PatchUserResponseDto(user);
+        return new ResponseEntity<>(new PatchUserResponseDto(user), HttpStatus.OK);
     }
 
     // id 정보조회
     @GetMapping("/{id}")
-    public UserInfoResponseDto getUserInfo(@PathVariable Long id, HttpServletRequest request) {
-        return userService.getUserInfo(id, request);
+    public ResponseEntity<UserInfoResponseDto> getUserInfo(@PathVariable Long id, HttpServletRequest request) {
+        return new ResponseEntity<>(userService.getUserInfo(id, request), HttpStatus.OK);
     }
 
     // 회원탈퇴
