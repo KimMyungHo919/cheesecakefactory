@@ -1,15 +1,12 @@
-package com.efactoring.cheesecakefactory.store.service;
+package com.efactoring.cheesecakefactory.domain.store.service;
 
-import com.efactoring.cheesecakefactory.store.dto.StoreDTO;
-import com.efactoring.cheesecakefactory.store.entity.Store;
-import com.efactoring.cheesecakefactory.store.repository.StoreRepository;
+import com.efactoring.cheesecakefactory.domain.store.dto.StoreDTO;
+import com.efactoring.cheesecakefactory.domain.store.entity.Store;
+import com.efactoring.cheesecakefactory.domain.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor

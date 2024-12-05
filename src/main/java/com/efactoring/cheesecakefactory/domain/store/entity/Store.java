@@ -1,4 +1,4 @@
-package com.efactoring.cheesecakefactory.store.entity;
+package com.efactoring.cheesecakefactory.domain.store.entity;
 
 import com.efactoring.cheesecakefactory.domain.base.BaseEntity;
 import jakarta.persistence.Entity;

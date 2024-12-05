@@ -1,11 +1,6 @@
-package com.efactoring.cheesecakefactory.store.dto;
+package com.efactoring.cheesecakefactory.domain.store.dto;
 
-import com.efactoring.cheesecakefactory.domain.base.BaseEntity;
-import com.efactoring.cheesecakefactory.store.entity.Store;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.efactoring.cheesecakefactory.domain.store.entity.Store;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

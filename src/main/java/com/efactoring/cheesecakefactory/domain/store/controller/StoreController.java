@@ -1,8 +1,7 @@
-package com.efactoring.cheesecakefactory.store.controller;
+package com.efactoring.cheesecakefactory.domain.store.controller;
 
-import com.efactoring.cheesecakefactory.store.dto.StoreDTO;
-import com.efactoring.cheesecakefactory.store.entity.Store;
-import com.efactoring.cheesecakefactory.store.service.StoreService;
+import com.efactoring.cheesecakefactory.domain.store.dto.StoreDTO;
+import com.efactoring.cheesecakefactory.domain.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
