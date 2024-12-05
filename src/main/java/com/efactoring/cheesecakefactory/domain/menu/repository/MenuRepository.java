@@ -12,5 +12,5 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
         return findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "없는 메뉴 입니다."));
     }
 
-    List<Menu> findByStoreId(long id);
+    List<Menu> findByStoreIdAndIsActiveIsTrue(long id);
 }

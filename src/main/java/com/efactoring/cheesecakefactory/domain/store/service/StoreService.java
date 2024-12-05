@@ -72,7 +72,7 @@ public class StoreService {
     }
 
     public List<MenuResponseDto> getStoreMenuItems(Long id) {
-        List<Menu> menus = menuRepository.findByStoreId(id);
+        List<Menu> menus = menuRepository.findByStoreIdAndIsActiveIsTrue(id);
 
         List<MenuResponseDto> menuResponseDtoList = new ArrayList<>();
 
