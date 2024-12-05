@@ -1,7 +1,6 @@
 package com.efactoring.cheesecakefactory.domain.user.entity;
 
 import com.efactoring.cheesecakefactory.domain.base.BaseEntity;
-import com.efactoring.cheesecakefactory.domain.user.dto.SignupRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

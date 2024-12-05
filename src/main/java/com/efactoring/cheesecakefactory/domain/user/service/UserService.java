@@ -17,7 +17,13 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     // 유저 회원가입
-    public SignupResponseDto registerUser(SignupRequestDto dto) {
+    public SignupResponseDto registerUser(SignupRequestDto dto, HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            throw new IllegalArgumentException("로그아웃 먼저 해주세요!");
+        }
+
         if (userRepository.existsByEmail(dto.getEmail())) {
             throw new IllegalArgumentException("이미 존재하는 이메일");
         }
@@ -71,6 +77,10 @@ public class UserService {
 
         if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) { // 앞에가 평문비밀번호, 뒤에가 암호화비밀번호
             throw new IllegalArgumentException("비밀번호 불일치");
+        }
+
+        if (passwordEncoder.matches(dto.getNewPassword(), user.getPassword())) { // 앞에가 평문비밀번호, 뒤에가 암호화비밀번호
+            throw new IllegalArgumentException("현재비밀번호와 수정할 비밀번호가 같습니다.");
         }
 
         user.setName(dto.getName());

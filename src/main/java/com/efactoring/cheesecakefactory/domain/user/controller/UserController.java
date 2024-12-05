@@ -20,8 +20,8 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/signup")
-    public SignupResponseDto registerUser(@RequestBody @Valid SignupRequestDto dto) {
-        return userService.registerUser(dto);
+    public SignupResponseDto registerUser(@RequestBody @Valid SignupRequestDto dto, HttpServletRequest request) {
+        return userService.registerUser(dto, request);
     }
 
     // 로그인
@@ -69,7 +69,4 @@ public class UserController {
         userService.userStatusChange(id, request, dto.getPassword());
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
-
 }
