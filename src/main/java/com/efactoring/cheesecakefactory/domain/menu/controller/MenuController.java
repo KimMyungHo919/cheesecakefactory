@@ -1,6 +1,6 @@
 package com.efactoring.cheesecakefactory.domain.menu.controller;
 
-import com.efactoring.cheesecakefactory.domain.common.SuccessResponseDto;
+import com.efactoring.cheesecakefactory.domain.base.SuccessResponseDto;
 import com.efactoring.cheesecakefactory.domain.menu.dto.MenuRequestDto;
 import com.efactoring.cheesecakefactory.domain.menu.dto.MenuResponseDto;
 import com.efactoring.cheesecakefactory.domain.menu.service.MenuService;

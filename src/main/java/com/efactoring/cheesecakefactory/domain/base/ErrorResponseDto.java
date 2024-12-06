@@ -1,4 +1,4 @@
-package com.efactoring.cheesecakefactory.domain.common;
+package com.efactoring.cheesecakefactory.domain.base;
 
 import lombok.Getter;
 
