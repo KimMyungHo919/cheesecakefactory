@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @Builder
@@ -14,12 +15,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 
 
-public class StoreDTO  {
+public class StoreDTO {
     private Long id;
     private String name;
     private Long minOrderPrice;
-    private LocalDateTime openTime;
-    private LocalDateTime closeTime;
+    private LocalTime openTime;
+    private LocalTime closeTime;
     private String status;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
