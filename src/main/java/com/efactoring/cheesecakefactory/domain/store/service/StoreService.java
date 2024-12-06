@@ -3,6 +3,7 @@ package com.efactoring.cheesecakefactory.domain.store.service;
 import com.efactoring.cheesecakefactory.domain.menu.dto.MenuResponseDto;
 import com.efactoring.cheesecakefactory.domain.menu.entity.Menu;
 import com.efactoring.cheesecakefactory.domain.menu.repository.MenuRepository;
+import com.efactoring.cheesecakefactory.domain.model.StoreStatus;
 import com.efactoring.cheesecakefactory.domain.order.dto.OrderResponseDto;
 import com.efactoring.cheesecakefactory.domain.order.entity.Orders;
 import com.efactoring.cheesecakefactory.domain.order.repository.OrderRepository;
@@ -26,7 +27,7 @@ public class StoreService {
     private final MenuRepository menuRepository;
 
     public List<StoreDTO> getStores() {
-        List<Store> stores = storeRepository.findByStatus("active");
+        List<Store> stores = storeRepository.findByStatus(StoreStatus.ACTIVE);
         List<StoreDTO> storeDTOs = stores.stream().map(StoreDTO::toDTO).toList();
         return storeDTOs;
     }
@@ -47,7 +48,7 @@ public class StoreService {
         store.setUser(user);
         store.ownerCheck(user);
 
-        if (storeRepository.countByUserIdAndStatus(user.getId(), "active") > 2) {
+        if (storeRepository.countByUserIdAndStatus(user.getId(), StoreStatus.ACTIVE) > 2) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "가게는 3개 이상 생성할 수 없습니다.");
         }
 

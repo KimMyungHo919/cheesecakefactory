@@ -1,5 +1,7 @@
 package com.efactoring.cheesecakefactory.domain.user.dto;
 
+import com.efactoring.cheesecakefactory.domain.model.UserRole;
+import com.efactoring.cheesecakefactory.domain.model.UserStatus;
 import com.efactoring.cheesecakefactory.domain.user.entity.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,8 +14,8 @@ public class UserInfoResponseDto {
     private String name;
     private String email;
     private String address;
-    private String status;
-    private String role;
+    private UserStatus status;
+    private UserRole role;
 
     public UserInfoResponseDto(User user) {
         this.id = user.getId();

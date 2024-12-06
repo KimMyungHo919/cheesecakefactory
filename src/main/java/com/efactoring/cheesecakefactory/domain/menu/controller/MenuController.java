@@ -4,6 +4,7 @@ import com.efactoring.cheesecakefactory.domain.base.SuccessResponseDto;
 import com.efactoring.cheesecakefactory.domain.menu.dto.MenuRequestDto;
 import com.efactoring.cheesecakefactory.domain.menu.dto.MenuResponseDto;
 import com.efactoring.cheesecakefactory.domain.menu.service.MenuService;
+import com.efactoring.cheesecakefactory.domain.model.ReturnStatusCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,8 @@ public class MenuController {
     ) {
         MenuResponseDto menuResponseDto = menuService.createMenu(storeId, menuRequestDto);
 
-        SuccessResponseDto successResponseDto = new SuccessResponseDto("CREATED", 201, menuResponseDto);
+        ReturnStatusCode status = ReturnStatusCode.CREATED;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), menuResponseDto);
 
         return new ResponseEntity<>(successResponseDto, HttpStatus.CREATED);
     }
@@ -57,7 +59,8 @@ public class MenuController {
     ) {
         MenuResponseDto menuResponseDto = menuService.updateMenu(storeId, id, menuRequestDto);
 
-        SuccessResponseDto successResponseDto = new SuccessResponseDto("OK", 200, menuResponseDto);
+        ReturnStatusCode status = ReturnStatusCode.OK;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), menuResponseDto);
 
         return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
     }
@@ -75,7 +78,8 @@ public class MenuController {
             @PathVariable Long storeId,
             @PathVariable Long id
     ) {
-        SuccessResponseDto successResponseDto = new SuccessResponseDto("NO CONTENTS", 204, null);
+        ReturnStatusCode status = ReturnStatusCode.OK;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), null);
 
         menuService.deleteMenu(storeId, id);
 

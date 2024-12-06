@@ -1,5 +1,6 @@
 package com.efactoring.cheesecakefactory.domain.store.repository;
 
+import com.efactoring.cheesecakefactory.domain.model.StoreStatus;
 import com.efactoring.cheesecakefactory.domain.store.entity.Store;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
         return findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "없는 가게 입니다."));
     }
 
-    List<Store> findByStatus(String status);
+    List<Store> findByStatus(StoreStatus status);
 
-    long countByUserIdAndStatus(Long id, String status);
+    long countByUserIdAndStatus(Long id, StoreStatus status);
 }

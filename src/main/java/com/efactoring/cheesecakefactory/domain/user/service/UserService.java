@@ -1,10 +1,11 @@
 package com.efactoring.cheesecakefactory.domain.user.service;
 
+import com.efactoring.cheesecakefactory.domain.model.UserRole;
+import com.efactoring.cheesecakefactory.domain.model.UserStatus;
 import com.efactoring.cheesecakefactory.domain.order.dto.OrderResponseDto;
 import com.efactoring.cheesecakefactory.domain.order.entity.Orders;
 import com.efactoring.cheesecakefactory.domain.order.repository.OrderRepository;
 import com.efactoring.cheesecakefactory.domain.user.config.PasswordEncoder;
-import com.efactoring.cheesecakefactory.domain.user.dto.LoginResponseDto;
 import com.efactoring.cheesecakefactory.domain.user.dto.PatchUserRequestDto;
 import com.efactoring.cheesecakefactory.domain.user.dto.PatchUserResponseDto;
 import com.efactoring.cheesecakefactory.domain.user.dto.SignupRequestDto;
@@ -12,8 +13,6 @@ import com.efactoring.cheesecakefactory.domain.user.dto.SignupResponseDto;
 import com.efactoring.cheesecakefactory.domain.user.dto.UserInfoResponseDto;
 import com.efactoring.cheesecakefactory.domain.user.entity.User;
 import com.efactoring.cheesecakefactory.domain.user.repository.UserRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -38,15 +37,11 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다.");
         }
 
-        if (!dto.getRole().equals("USER") && !dto.getRole().equals("OWNER")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "유저의 ROLE은 USER 혹은 OWNER만 가능합니다.");
-        }
-
         User user = new User();
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setStatus("Active");
+        user.setStatus(UserStatus.ACTIVE);
         user.setRole(dto.getRole());
         user.setAddress(dto.getAddress());
 
@@ -61,7 +56,7 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 이메일입니다."));
 
-        if (user.getStatus().equals("Deleted")) {
+        if (Objects.equals(user.getStatus(), UserStatus.DELETED)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "탈퇴한 회원입니다.");
         }
 
@@ -109,18 +104,18 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호를 다시 확인해주세요.");
         }
 
-        if ("Deleted".equals(user.getStatus())) {
+        if (Objects.equals(user.getStatus(), UserStatus.DELETED)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "이미 탈퇴한 유저입니다.");
         }
 
-        user.setStatus("Deleted");
+        user.setStatus(UserStatus.DELETED);
         userRepository.save(user);
     }
 
     public List<OrderResponseDto> getUserOrder(Long id, User user) {
         if (!Objects.equals(id, user.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인의 주문만 조회할 수 있습니다.");
-        } else if (!Objects.equals(user.getRole(), "USER")) {
+        } else if (!Objects.equals(user.getRole(), UserRole.USER)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "user 유저만 조회할 수 있습니다.");
         }
 

@@ -1,6 +1,7 @@
 package com.efactoring.cheesecakefactory.domain.exception;
 
 import com.efactoring.cheesecakefactory.domain.base.ErrorResponseDto;
+import com.efactoring.cheesecakefactory.domain.model.ReturnStatusCode;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,9 +36,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handleIllegalArgumentExceptionNotFound(
             IllegalArgumentException exception
     ) {
+        ReturnStatusCode statusCode = ReturnStatusCode.NOT_FOUND;
+
         ErrorResponseDto errorResponseData = new ErrorResponseDto(
-                HttpStatus.NOT_FOUND.name(),
-                HttpStatus.NOT_FOUND.value(),
+                statusCode.name(),
+                statusCode.getCode(),
                 exception.getLocalizedMessage(),
                 LocalDateTime.now()
         );
@@ -49,9 +52,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handleValidException(
             MethodArgumentNotValidException ex
     ) {
+        ReturnStatusCode statusCode = ReturnStatusCode.BAD_REQUEST;
+
         ErrorResponseDto errorResponseData = new ErrorResponseDto(
-                HttpStatus.BAD_REQUEST.name(),
-                HttpStatus.BAD_REQUEST.value(),
+                statusCode.name(),
+                statusCode.getCode(),
                 ex.getBindingResult().getAllErrors().get(0).getDefaultMessage(),
                 timestamp
         );
@@ -62,9 +67,11 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> handleIllegalArgumentException() {
+        ReturnStatusCode statusCode = ReturnStatusCode.INTERNAL_SERVER_ERROR;
+
         ErrorResponseDto errorResponseData = new ErrorResponseDto(
-                HttpStatus.INTERNAL_SERVER_ERROR.name(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                statusCode.name(),
+                statusCode.getCode(),
                 "서버에 문제가 발생했습니다.",
                 timestamp
         );
