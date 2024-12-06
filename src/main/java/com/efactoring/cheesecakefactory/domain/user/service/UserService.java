@@ -1,7 +1,15 @@
 package com.efactoring.cheesecakefactory.domain.user.service;
 
+import com.efactoring.cheesecakefactory.domain.order.dto.OrderResponseDto;
+import com.efactoring.cheesecakefactory.domain.order.entity.Orders;
+import com.efactoring.cheesecakefactory.domain.order.repository.OrderRepository;
 import com.efactoring.cheesecakefactory.domain.user.config.PasswordEncoder;
-import com.efactoring.cheesecakefactory.domain.user.dto.*;
+import com.efactoring.cheesecakefactory.domain.user.dto.LoginResponseDto;
+import com.efactoring.cheesecakefactory.domain.user.dto.PatchUserRequestDto;
+import com.efactoring.cheesecakefactory.domain.user.dto.PatchUserResponseDto;
+import com.efactoring.cheesecakefactory.domain.user.dto.SignupRequestDto;
+import com.efactoring.cheesecakefactory.domain.user.dto.SignupResponseDto;
+import com.efactoring.cheesecakefactory.domain.user.dto.UserInfoResponseDto;
 import com.efactoring.cheesecakefactory.domain.user.entity.User;
 import com.efactoring.cheesecakefactory.domain.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,12 +19,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final OrderRepository orderRepository;
 
     // 유저 회원가입
     public SignupResponseDto registerUser(SignupRequestDto dto, HttpServletRequest request) {
@@ -143,5 +156,22 @@ public class UserService {
         user.setStatus("Deleted");
         userRepository.save(user);
         session.invalidate();
+    }
+
+    public List<OrderResponseDto> getUserOrder(Long id, User user) {
+        if (!Objects.equals(id, user.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인의 주문만 조회할 수 있습니다.");
+        } else if (!Objects.equals(user.getRole(), "USER")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "user 유저만 조회할 수 있습니다.");
+        }
+
+        List<Orders> orders = orderRepository.findByUserId(user.getId());
+        List<OrderResponseDto> orderResponseDtoList = new ArrayList<>();
+        for (Orders order : orders) {
+            orderResponseDtoList.add(new OrderResponseDto(order));
+        }
+
+        return orderResponseDtoList;
+
     }
 }
