@@ -1,9 +1,11 @@
 package com.efactoring.cheesecakefactory.domain.store.controller;
 
 import com.efactoring.cheesecakefactory.domain.common.SuccessResponseDto;
+import com.efactoring.cheesecakefactory.domain.menu.dto.MenuResponseDto;
 import com.efactoring.cheesecakefactory.domain.order.dto.OrderResponseDto;
 import com.efactoring.cheesecakefactory.domain.store.dto.StoreDTO;
 import com.efactoring.cheesecakefactory.domain.store.service.StoreService;
+import com.efactoring.cheesecakefactory.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import java.util.List;
 
@@ -58,11 +61,29 @@ public class StoreController {
      */
     @GetMapping("/stores/{id}/orders")
     public ResponseEntity<SuccessResponseDto> getStoreOrders(
-            @PathVariable Long id
+            @PathVariable Long id,
+            @SessionAttribute User user
     ) {
-        List<OrderResponseDto> orderResponseDto = storeService.getStoreOrder(id);
+        List<OrderResponseDto> orderResponseDto = storeService.getStoreOrder(id, user);
 
         SuccessResponseDto successResponseDto = new SuccessResponseDto("OK", 200, orderResponseDto);
+
+        return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
+    }
+
+    /**
+     * 가게별 메뉴 조회
+     *
+     * @param id store entity id
+     * @return List<MenuResponseDto>
+     */
+    @GetMapping("/stores/{id}/menu-items")
+    public ResponseEntity<SuccessResponseDto> getStoreMenuItems(
+            @PathVariable Long id
+    ) {
+        List<MenuResponseDto> menuResponseDtoList = storeService.getStoreMenuItems(id);
+
+        SuccessResponseDto successResponseDto = new SuccessResponseDto("OK", 200, menuResponseDtoList);
 
         return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
     }
