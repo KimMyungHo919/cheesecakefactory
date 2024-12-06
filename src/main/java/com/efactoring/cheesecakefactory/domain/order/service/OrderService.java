@@ -2,6 +2,8 @@ package com.efactoring.cheesecakefactory.domain.order.service;
 
 import com.efactoring.cheesecakefactory.domain.menu.entity.Menu;
 import com.efactoring.cheesecakefactory.domain.menu.repository.MenuRepository;
+import com.efactoring.cheesecakefactory.domain.model.OrderStatus;
+import com.efactoring.cheesecakefactory.domain.model.UserRole;
 import com.efactoring.cheesecakefactory.domain.order.dto.OrderRequestDto;
 import com.efactoring.cheesecakefactory.domain.order.dto.OrderResponseDto;
 import com.efactoring.cheesecakefactory.domain.order.dto.OrderStatusRequestDto;
@@ -17,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.Objects;
 
 @Service
@@ -27,11 +28,8 @@ public class OrderService {
     private final MenuRepository menuRepository;
     private final StoreRepository storeRepository;
 
-    // 주문 준비 순서
-    private final String[] ORDER_SEQUENCE = {"order", "access", "cooking", "cooked", "delivery", "completed"};
-
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto, User user) {
-        if (!user.getRole().equals("USER")) {
+        if (!user.getRole().equals(UserRole.USER)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "고객만 주문이 가능합니다.");
         }
 
@@ -52,7 +50,7 @@ public class OrderService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "가게 운영 시간이 끝났습니다.");
         }
 
-        Orders orders = new Orders(orderRequestDto.getQuantity(), totalPrice, "order", menu, user, store);
+        Orders orders = new Orders(orderRequestDto.getQuantity(), totalPrice, OrderStatus.ORDER, menu, user, store);
 
         orderRepository.save(orders);
 
@@ -63,7 +61,7 @@ public class OrderService {
     public OrderResponseDto updateOrder(Long id, OrderStatusRequestDto orderStatusRequestDto, User user) {
         Orders orders = orderRepository.findByIdOrElseThrow(id);
 
-        if (!Objects.equals(user.getRole(), "OWNER")) {
+        if (!Objects.equals(user.getRole(), UserRole.OWNER)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "owner 유저만 주문 상태를 변경 할 수 있습니다.");
         } else if (!Objects.equals(orders.getStore().getUser().getId(), user.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 가게의 주문만 변경이 가능합니다.");
@@ -73,11 +71,11 @@ public class OrderService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "메뉴와 주문 번호가 틀립니다.");
         }
 
-        if (Objects.equals(orders.getStatus(), "completed")) {
+        if (Objects.equals(orders.getStatus(), OrderStatus.COMPLETED)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 완료된 주문입니다.");
         }
 
-        orders.updateOrder(ORDER_SEQUENCE[Arrays.asList(ORDER_SEQUENCE).indexOf(orders.getStatus()) + 1]);
+        orders.updateOrder(OrderStatus.updateOrderStatus(orders.getStatus()));
 
         return new OrderResponseDto(orders);
     }

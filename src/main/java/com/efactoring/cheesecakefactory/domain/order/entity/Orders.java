@@ -2,6 +2,7 @@ package com.efactoring.cheesecakefactory.domain.order.entity;
 
 import com.efactoring.cheesecakefactory.domain.base.BaseEntity;
 import com.efactoring.cheesecakefactory.domain.menu.entity.Menu;
+import com.efactoring.cheesecakefactory.domain.model.OrderStatus;
 import com.efactoring.cheesecakefactory.domain.store.entity.Store;
 import com.efactoring.cheesecakefactory.domain.user.entity.User;
 import jakarta.persistence.Entity;
@@ -21,7 +22,7 @@ public class Orders extends BaseEntity {
 
     private int quantity;
     private Long totalPrice;
-    private String status;
+    private OrderStatus status;
 
     @ManyToOne
     @JoinColumn(name = "menu_id")
@@ -35,7 +36,7 @@ public class Orders extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Orders(int quantity, Long totalPrice, String status, Menu menu, User user, Store store) {
+    public Orders(int quantity, Long totalPrice, OrderStatus status, Menu menu, User user, Store store) {
         this.quantity = quantity;
         this.totalPrice = totalPrice;
         this.status = status;
@@ -47,7 +48,7 @@ public class Orders extends BaseEntity {
     public Orders() {
     }
 
-    public void updateOrder(String status) {
+    public void updateOrder(OrderStatus status) {
         this.status = status;
     }
 }

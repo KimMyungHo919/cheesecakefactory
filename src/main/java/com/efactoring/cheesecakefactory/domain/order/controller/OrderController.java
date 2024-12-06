@@ -1,6 +1,7 @@
 package com.efactoring.cheesecakefactory.domain.order.controller;
 
-import com.efactoring.cheesecakefactory.domain.common.SuccessResponseDto;
+import com.efactoring.cheesecakefactory.domain.base.SuccessResponseDto;
+import com.efactoring.cheesecakefactory.domain.model.ReturnStatusCode;
 import com.efactoring.cheesecakefactory.domain.order.dto.OrderRequestDto;
 import com.efactoring.cheesecakefactory.domain.order.dto.OrderResponseDto;
 import com.efactoring.cheesecakefactory.domain.order.dto.OrderStatusRequestDto;
@@ -37,7 +38,8 @@ public class OrderController {
     ) {
         OrderResponseDto orderResponseDto = orderService.createOrder(orderRequestDto, user);
 
-        SuccessResponseDto successResponseDto = new SuccessResponseDto("CREATED", 201, orderResponseDto);
+        ReturnStatusCode status = ReturnStatusCode.CREATED;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), orderResponseDto);
 
         return new ResponseEntity<>(successResponseDto, HttpStatus.CREATED);
     }
@@ -57,7 +59,8 @@ public class OrderController {
     ) {
         OrderResponseDto orderResponseDto = orderService.updateOrder(id, orderStatusRequestDto, user);
 
-        SuccessResponseDto successResponseDto = new SuccessResponseDto("OK", 200, orderResponseDto);
+        ReturnStatusCode status = ReturnStatusCode.OK;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), orderResponseDto);
 
         return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
     }
@@ -72,7 +75,8 @@ public class OrderController {
     public ResponseEntity<SuccessResponseDto> getOrder(@PathVariable Long id) {
         OrderResponseDto orderResponseDto = orderService.getOrder(id);
 
-        SuccessResponseDto successResponseDto = new SuccessResponseDto("OK", 200, orderResponseDto);
+        ReturnStatusCode status = ReturnStatusCode.OK;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), orderResponseDto);
 
         return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
     }

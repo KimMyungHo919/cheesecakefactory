@@ -1,5 +1,6 @@
 package com.efactoring.cheesecakefactory.domain.store.dto;
 
+import com.efactoring.cheesecakefactory.domain.model.StoreStatus;
 import com.efactoring.cheesecakefactory.domain.store.entity.Store;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,11 +18,12 @@ import java.time.LocalTime;
 
 public class StoreDTO {
     private Long id;
+    private Long userId;
     private String name;
     private Long minOrderPrice;
     private LocalTime openTime;
     private LocalTime closeTime;
-    private String status;
+    private StoreStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
@@ -29,6 +31,7 @@ public class StoreDTO {
     public static StoreDTO toDTO(Store store) {
         return StoreDTO.builder()
                 .id(store.getId())
+                .userId(store.getUser().getId())
                 .name(store.getName())
                 .minOrderPrice(store.getMinOrderPrice())
                 .openTime(store.getOpenTime())
@@ -51,6 +54,4 @@ public class StoreDTO {
                 .status(dto.getStatus())
                 .build();
     }
-
-    // E
 }

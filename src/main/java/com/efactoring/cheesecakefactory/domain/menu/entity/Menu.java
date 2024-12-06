@@ -1,6 +1,7 @@
 package com.efactoring.cheesecakefactory.domain.menu.entity;
 
 import com.efactoring.cheesecakefactory.domain.base.BaseEntity;
+import com.efactoring.cheesecakefactory.domain.model.MenuStatus;
 import com.efactoring.cheesecakefactory.domain.order.entity.Orders;
 import com.efactoring.cheesecakefactory.domain.store.entity.Store;
 import jakarta.persistence.CascadeType;
@@ -25,7 +26,7 @@ public class Menu extends BaseEntity {
 
     private String name;
     private Long price;
-    private String status;
+    private MenuStatus status;
     private Boolean isActive;
 
     @ManyToOne
@@ -35,7 +36,7 @@ public class Menu extends BaseEntity {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Orders> orders = new ArrayList<>();
 
-    public Menu(String name, Long price, String status, Store store) {
+    public Menu(String name, Long price, MenuStatus status, Store store) {
         this.name = name;
         this.price = price;
         this.status = status;
@@ -46,7 +47,7 @@ public class Menu extends BaseEntity {
     public Menu() {
     }
 
-    public void updateMenu(String name, Long price, String status) {
+    public void updateMenu(String name, Long price, MenuStatus status) {
         this.name = name == null ? this.name : name;
         this.price = price == null || price == 0 ? this.price : price;
         this.status = status == null ? this.status : status;

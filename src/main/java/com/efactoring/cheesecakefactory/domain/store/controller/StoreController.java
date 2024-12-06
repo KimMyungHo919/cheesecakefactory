@@ -1,7 +1,8 @@
 package com.efactoring.cheesecakefactory.domain.store.controller;
 
-import com.efactoring.cheesecakefactory.domain.common.SuccessResponseDto;
+import com.efactoring.cheesecakefactory.domain.base.SuccessResponseDto;
 import com.efactoring.cheesecakefactory.domain.menu.dto.MenuResponseDto;
+import com.efactoring.cheesecakefactory.domain.model.ReturnStatusCode;
 import com.efactoring.cheesecakefactory.domain.order.dto.OrderResponseDto;
 import com.efactoring.cheesecakefactory.domain.store.dto.StoreDTO;
 import com.efactoring.cheesecakefactory.domain.store.service.StoreService;
@@ -26,30 +27,50 @@ import java.util.List;
 public class StoreController {
     private final StoreService storeService;
 
-
     @GetMapping("/stores")
-    public List<StoreDTO> getStore() {
-        return storeService.getStores();
+    public ResponseEntity<SuccessResponseDto> getStore() {
+        ReturnStatusCode status = ReturnStatusCode.OK;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), storeService.getStores());
+
+        return ResponseEntity.ok(successResponseDto);
     }
 
     @GetMapping("/stores/{id}")
-    public StoreDTO getStoreById(@PathVariable long id) {
-        return storeService.getStoreById(id);
+    public ResponseEntity<SuccessResponseDto> getStoreById(@PathVariable long id) {
+        ReturnStatusCode status = ReturnStatusCode.OK;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), storeService.getStoreById(id));
+
+        return ResponseEntity.ok(successResponseDto);
     }
 
     @DeleteMapping("/stores/{id}")
-    public void deleteStoreById(@PathVariable long id) {
-        storeService.deletsStoreById(id);
+    public ResponseEntity<SuccessResponseDto> deleteStoreById(@PathVariable long id) {
+        storeService.deleteStoreById(id);
+
+        ReturnStatusCode status = ReturnStatusCode.OK;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), null);
+
+        return ResponseEntity.ok(successResponseDto);
     }
 
     @PostMapping("/stores")
-    public void addStore(@RequestBody StoreDTO storeDTO) {
-        storeService.addStore(storeDTO);
+    public ResponseEntity<SuccessResponseDto> addStore(@RequestBody StoreDTO storeDTO, @SessionAttribute User user) {
+        storeService.addStore(storeDTO, user);
+
+        ReturnStatusCode status = ReturnStatusCode.CREATED;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), null);
+
+        return new ResponseEntity<>(successResponseDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/stores/{id}")
-    public void updateStore(@PathVariable long id, @RequestBody StoreDTO storeDTO) {
-        storeService.updateStore(id, storeDTO);
+    public ResponseEntity<SuccessResponseDto> updateStore(@PathVariable long id, @RequestBody StoreDTO storeDTO, @SessionAttribute User user) {
+        storeService.updateStore(id, storeDTO, user);
+
+        ReturnStatusCode status = ReturnStatusCode.OK;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), null);
+
+        return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
     }
 
     /**
@@ -66,7 +87,8 @@ public class StoreController {
     ) {
         List<OrderResponseDto> orderResponseDto = storeService.getStoreOrder(id, user);
 
-        SuccessResponseDto successResponseDto = new SuccessResponseDto("OK", 200, orderResponseDto);
+        ReturnStatusCode status = ReturnStatusCode.OK;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), orderResponseDto);
 
         return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
     }
@@ -83,7 +105,8 @@ public class StoreController {
     ) {
         List<MenuResponseDto> menuResponseDtoList = storeService.getStoreMenuItems(id);
 
-        SuccessResponseDto successResponseDto = new SuccessResponseDto("OK", 200, menuResponseDtoList);
+        ReturnStatusCode status = ReturnStatusCode.OK;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), menuResponseDtoList);
 
         return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
     }
