@@ -55,12 +55,13 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto dto, HttpServletRequest request) {
 
+        User user = userService.loginUser(dto.getEmail(), dto.getPassword());
+
         HttpSession session = request.getSession(false);
+
         if (session != null && session.getAttribute("user") != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 로그인된 사용자입니다.");
         }
-
-        User user = userService.loginUser(dto.getEmail(), dto.getPassword());
 
         session = request.getSession(true);
         session.setAttribute("user", user);
@@ -75,9 +76,6 @@ public class UserController {
     public ResponseEntity<String> logout(HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 로그아웃된 사용자입니다.");
-        }
         session.invalidate();
 
         return new ResponseEntity<>("로그아웃 성공!", HttpStatus.OK);
@@ -88,11 +86,8 @@ public class UserController {
     public ResponseEntity<PatchUserResponseDto> patchUser(@PathVariable Long id, @RequestBody @Valid PatchUserRequestDto dto, HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "로그인을 먼저 해주세요.");
-        }
-
         User loginUser = (User) session.getAttribute("user");
+
         if (!loginUser.getId().equals(id)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "자신의 정보만 수정가능합니다. 아이디를 확인해주세요.");
         }
@@ -107,11 +102,8 @@ public class UserController {
     public ResponseEntity<UserInfoResponseDto> getUserInfo(@PathVariable Long id, HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "로그인을 먼저 해주세요.");
-        }
-
         User loginUser = (User) session.getAttribute("user");
+
         if (!loginUser.getId().equals(id)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "자신의 정보만 조회가능합니다. 아이디를 확인해주세요.");
         }
@@ -125,13 +117,9 @@ public class UserController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<Void> userDelete(@PathVariable Long id, HttpServletRequest request, @RequestBody DeleteUserRequestDto dto) {
 
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "로그인을 먼저 해주세요.");
-        }
-
         userService.userStatusChange(id, dto.getPassword());
 
+        HttpSession session = request.getSession(false);
         session.invalidate();
 
         return new ResponseEntity<>(HttpStatus.OK);
