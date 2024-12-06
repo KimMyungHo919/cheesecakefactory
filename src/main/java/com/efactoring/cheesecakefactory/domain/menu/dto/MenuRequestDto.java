@@ -1,19 +1,21 @@
 package com.efactoring.cheesecakefactory.domain.menu.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import com.efactoring.cheesecakefactory.domain.model.MenuStatus;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
 public class MenuRequestDto {
 
-    @NotBlank(message = "메뉴명을 입력해 주세요")
+    @NotEmpty(message = "메뉴명을 입력해 주세요.")
     private final String name;
 
-    @NotBlank(message = "가격을 입력해 주세요")
+    @Min(value = 1, message = "금액은 0이하가 될 수 없습니다.")
     private final long price;
 
-    @NotBlank(message = "상태를 입력해 주세요")
+    @NotNull(message = "메뉴 상태를 입력해 주세요.")
     private final MenuStatus status;
 
     public MenuRequestDto(String name, long price, MenuStatus status) {

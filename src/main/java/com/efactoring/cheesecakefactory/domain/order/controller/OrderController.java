@@ -7,6 +7,7 @@ import com.efactoring.cheesecakefactory.domain.order.dto.OrderResponseDto;
 import com.efactoring.cheesecakefactory.domain.order.dto.OrderStatusRequestDto;
 import com.efactoring.cheesecakefactory.domain.order.service.OrderService;
 import com.efactoring.cheesecakefactory.domain.user.entity.User;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class OrderController {
      */
     @PostMapping
     public ResponseEntity<SuccessResponseDto> createOrder(
-            @RequestBody OrderRequestDto orderRequestDto,
+            @Valid @RequestBody OrderRequestDto orderRequestDto,
             @SessionAttribute User user
     ) {
         OrderResponseDto orderResponseDto = orderService.createOrder(orderRequestDto, user);
@@ -54,7 +55,7 @@ public class OrderController {
     @PatchMapping("/{id}")
     public ResponseEntity<SuccessResponseDto> updateOrder(
             @PathVariable Long id,
-            @RequestBody OrderStatusRequestDto orderStatusRequestDto,
+            @Valid @RequestBody OrderStatusRequestDto orderStatusRequestDto,
             @SessionAttribute User user
     ) {
         OrderResponseDto orderResponseDto = orderService.updateOrder(id, orderStatusRequestDto, user);

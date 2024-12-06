@@ -6,13 +6,12 @@ import com.efactoring.cheesecakefactory.domain.menu.entity.Menu;
 import com.efactoring.cheesecakefactory.domain.menu.repository.MenuRepository;
 import com.efactoring.cheesecakefactory.domain.store.entity.Store;
 import com.efactoring.cheesecakefactory.domain.store.repository.StoreRepository;
+import com.efactoring.cheesecakefactory.domain.user.entity.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -20,9 +19,13 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final StoreRepository storeRepository;
 
-    public MenuResponseDto createMenu(Long storeId, MenuRequestDto menuRequestDto) {
+    public MenuResponseDto createMenu(Long storeId, MenuRequestDto menuRequestDto, User user) {
         Store store = storeRepository.findByIdOrElseThrow(storeId);
+
         Menu menu = new Menu(menuRequestDto.getName(), menuRequestDto.getPrice(), menuRequestDto.getStatus(), store);
+
+        menu.isStatusOwner(user.getRole());
+        menu.storesOwner(user.getId());
 
         menuRepository.save(menu);
 
@@ -30,12 +33,16 @@ public class MenuService {
     }
 
     @Transactional
-    public MenuResponseDto updateMenu(Long storeId, Long id, MenuRequestDto menuRequestDto) {
-        Store store = storeRepository.findByIdOrElseThrow(storeId);
+    public MenuResponseDto updateMenu(Long storeId, Long id, MenuRequestDto menuRequestDto, User user) {
+        storeRepository.findByIdOrElseThrow(storeId);
         Menu menu = menuRepository.findByIdOrElseThrow(id);
 
-        if (!Objects.equals(menu.getStore().getId(), store.getId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "해당 가게의 메뉴가 아닙니다.");
+        menu.isStatusOwner(user.getRole());
+        menu.storesOwner(user.getId());
+        menu.storesMenu(storeId);
+
+        if (menuRequestDto.getStatus() == null && menuRequestDto.getPrice() == 0 && menuRequestDto.getName() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "변경될 값이 없습니다.");
         }
 
         menu.updateMenu(menuRequestDto.getName(), menuRequestDto.getPrice(), menuRequestDto.getStatus());
@@ -44,13 +51,13 @@ public class MenuService {
     }
 
     @Transactional
-    public void deleteMenu(Long storeId, Long id) {
-        Store store = storeRepository.findByIdOrElseThrow(storeId);
+    public void deleteMenu(Long storeId, Long id, User user) {
+        storeRepository.findByIdOrElseThrow(storeId);
         Menu menu = menuRepository.findByIdOrElseThrow(id);
 
-        if (!Objects.equals(menu.getStore().getId(), store.getId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "해당 가게의 메뉴가 아닙니다.");
-        }
+        menu.isStatusOwner(user.getRole());
+        menu.storesOwner(user.getId());
+        menu.storesMenu(storeId);
 
         if (!menu.getIsActive()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "이미 삭제된 메뉴 입니다.");
