@@ -1,6 +1,6 @@
 package com.efactoring.cheesecakefactory.domain.review.controller;
 
-import com.efactoring.cheesecakefactory.domain.common.SuccessResponseDto;
+import com.efactoring.cheesecakefactory.domain.base.SuccessResponseDto;
 import com.efactoring.cheesecakefactory.domain.review.dto.ReviewRequestDto;
 import com.efactoring.cheesecakefactory.domain.review.dto.ReviewResponseDto;
 import com.efactoring.cheesecakefactory.domain.review.service.ReviewService;
