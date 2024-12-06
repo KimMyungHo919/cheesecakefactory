@@ -62,7 +62,7 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 이메일입니다."));
 
         if (user.getStatus().equals("Deleted")) {
-            throw new IllegalArgumentException("탈퇴한 회원입니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "탈퇴한 회원입니다.");
         }
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
