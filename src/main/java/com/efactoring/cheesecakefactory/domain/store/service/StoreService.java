@@ -41,8 +41,10 @@ public class StoreService {
         storeRepository.deleteById(id);
     }
 
-    public void addStore(StoreDTO storeDTO) {
+    public void addStore(StoreDTO storeDTO, User user) {
         Store store = StoreDTO.toEntity(storeDTO);
+        store.setUser(user);
+
         storeRepository.save(store);
     }
 

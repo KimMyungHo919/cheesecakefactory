@@ -43,8 +43,8 @@ public class StoreController {
     }
 
     @PostMapping("/stores")
-    public void addStore(@RequestBody StoreDTO storeDTO) {
-        storeService.addStore(storeDTO);
+    public void addStore(@RequestBody StoreDTO storeDTO, @SessionAttribute User user) {
+        storeService.addStore(storeDTO, user);
     }
 
     @PutMapping("/stores/{id}")
