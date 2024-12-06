@@ -1,6 +1,7 @@
 package com.efactoring.cheesecakefactory.domain.user.dto;
 
 import com.efactoring.cheesecakefactory.domain.base.BaseEntity;
+import com.efactoring.cheesecakefactory.domain.model.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -28,7 +29,6 @@ public class SignupRequestDto extends BaseEntity {
     @NotBlank
     private String name;
 
-    @NotBlank
-    private String role;
+    private UserRole role;
 
 }

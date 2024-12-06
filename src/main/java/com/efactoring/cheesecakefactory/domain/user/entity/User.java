@@ -1,7 +1,14 @@
 package com.efactoring.cheesecakefactory.domain.user.entity;
 
 import com.efactoring.cheesecakefactory.domain.base.BaseEntity;
-import jakarta.persistence.*;
+import com.efactoring.cheesecakefactory.domain.model.UserRole;
+import com.efactoring.cheesecakefactory.domain.model.UserStatus;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,17 +38,16 @@ public class User extends BaseEntity {
     @Column(name = "address")
     private String address;
 
-    @NotBlank
     @Column(name = "role")
-    private String role;
+    private UserRole role;
 
-    @NotBlank
     @Column(name = "status")
-    private String status;
+    private UserStatus status;
 
-    public User() { }
+    public User() {
+    }
 
-    public User(String name, String email, String password, String address, String role, String status) {
+    public User(String name, String email, String password, String address, UserRole role, UserStatus status) {
         this.name = name;
         this.email = email;
         this.password = password;

@@ -2,6 +2,7 @@ package com.efactoring.cheesecakefactory.domain.store.entity;
 
 import com.efactoring.cheesecakefactory.domain.base.BaseEntity;
 import com.efactoring.cheesecakefactory.domain.menu.entity.Menu;
+import com.efactoring.cheesecakefactory.domain.model.UserRole;
 import com.efactoring.cheesecakefactory.domain.user.entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -64,7 +65,7 @@ public class Store extends BaseEntity {
      * OWNER 유저인지 확인
      */
     public void ownerCheck(User user) {
-        if (!Objects.equals(user.getRole(), "OWNER")) {
+        if (!Objects.equals(user.getRole(), UserRole.OWNER)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "owner 유저만 가능합니다.");
         }
     }
