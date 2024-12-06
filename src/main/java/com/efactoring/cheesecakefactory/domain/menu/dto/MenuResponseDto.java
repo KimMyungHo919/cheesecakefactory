@@ -1,6 +1,7 @@
 package com.efactoring.cheesecakefactory.domain.menu.dto;
 
 import com.efactoring.cheesecakefactory.domain.menu.entity.Menu;
+import com.efactoring.cheesecakefactory.domain.model.MenuStatus;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -8,10 +9,9 @@ import java.time.LocalDateTime;
 @Getter
 public class MenuResponseDto {
     private final long id;
-//    private final long storeId;
     private final String name;
     private final long price;
-    private final String status;
+    private final MenuStatus status;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
