@@ -3,7 +3,6 @@ package com.efactoring.cheesecakefactory.domain.order.service;
 import com.efactoring.cheesecakefactory.domain.menu.entity.Menu;
 import com.efactoring.cheesecakefactory.domain.menu.repository.MenuRepository;
 import com.efactoring.cheesecakefactory.domain.model.OrderStatus;
-import com.efactoring.cheesecakefactory.domain.model.UserRole;
 import com.efactoring.cheesecakefactory.domain.order.dto.OrderRequestDto;
 import com.efactoring.cheesecakefactory.domain.order.dto.OrderResponseDto;
 import com.efactoring.cheesecakefactory.domain.order.dto.OrderStatusRequestDto;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalTime;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -29,28 +27,22 @@ public class OrderService {
     private final StoreRepository storeRepository;
 
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto, User user) {
-        if (!user.getRole().equals(UserRole.USER)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "고객만 주문이 가능합니다.");
-        }
-
         Menu menu = menuRepository.findByIdOrElseThrow(orderRequestDto.getMenuId());
         Store store = storeRepository.findByIdOrElseThrow(orderRequestDto.getStoreId());
 
-        Long totalPrice = orderRequestDto.getQuantity() * menu.getPrice();
+        Orders orders = new Orders(orderRequestDto.getQuantity(), OrderStatus.ORDER, menu, user, store);
+
+        orders.isStatusUser(user.getRole());
+        orders.totalPrice(orderRequestDto.getQuantity());
+        orders.isDeletedMenu();
+        orders.minOrderPriceCheck();
+        menu.storesMenu(orderRequestDto.getStoreId());
 
         LocalTime now = LocalTime.now();
-        LocalTime open = store.getOpenTime();
-        LocalTime close = store.getCloseTime();
 
-        if (!menu.getIsActive()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "이미 삭제된 메뉴입니다.");
-        } else if (totalPrice < store.getMinOrderPrice()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "주문금액은 최소주문금액보다 작을 수 없습니다.");
-        } else if (now.isBefore(open) || now.isAfter(close)) {
+        if (now.isBefore(store.getOpenTime()) || now.isAfter(store.getCloseTime())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "가게 운영 시간이 끝났습니다.");
         }
-
-        Orders orders = new Orders(orderRequestDto.getQuantity(), totalPrice, OrderStatus.ORDER, menu, user, store);
 
         orderRepository.save(orders);
 
@@ -61,20 +53,13 @@ public class OrderService {
     public OrderResponseDto updateOrder(Long id, OrderStatusRequestDto orderStatusRequestDto, User user) {
         Orders orders = orderRepository.findByIdOrElseThrow(id);
 
-        if (!Objects.equals(user.getRole(), UserRole.OWNER)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "owner 유저만 주문 상태를 변경 할 수 있습니다.");
-        } else if (!Objects.equals(orders.getStore().getUser().getId(), user.getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 가게의 주문만 변경이 가능합니다.");
-        }
+        orders.isStatusOwnerAndStoresOwner(user);
 
         if (orders.getMenu().getId() != orderStatusRequestDto.getMenuId()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "메뉴와 주문 번호가 틀립니다.");
         }
 
-        if (Objects.equals(orders.getStatus(), OrderStatus.COMPLETED)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 완료된 주문입니다.");
-        }
-
+        orders.alreadyCompletedOrder();
         orders.updateOrder(OrderStatus.updateOrderStatus(orders.getStatus()));
 
         return new OrderResponseDto(orders);
