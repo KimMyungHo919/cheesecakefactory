@@ -26,7 +26,6 @@ import java.util.List;
 public class StoreController {
     private final StoreService storeService;
 
-
     @GetMapping("/stores")
     public List<StoreDTO> getStore() {
         return storeService.getStores();
@@ -39,17 +38,17 @@ public class StoreController {
 
     @DeleteMapping("/stores/{id}")
     public void deleteStoreById(@PathVariable long id) {
-        storeService.deletsStoreById(id);
+        storeService.deleteStoreById(id);
     }
 
     @PostMapping("/stores")
-    public void addStore(@RequestBody StoreDTO storeDTO) {
-        storeService.addStore(storeDTO);
+    public void addStore(@RequestBody StoreDTO storeDTO, @SessionAttribute User user) {
+        storeService.addStore(storeDTO, user);
     }
 
     @PutMapping("/stores/{id}")
-    public void updateStore(@PathVariable long id, @RequestBody StoreDTO storeDTO) {
-        storeService.updateStore(id, storeDTO);
+    public void updateStore(@PathVariable long id, @RequestBody StoreDTO storeDTO, @SessionAttribute User user) {
+        storeService.updateStore(id, storeDTO, user);
     }
 
     /**

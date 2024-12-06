@@ -17,7 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -27,28 +26,43 @@ public class StoreService {
     private final MenuRepository menuRepository;
 
     public List<StoreDTO> getStores() {
-        List<Store> stores = storeRepository.findAll();
+        List<Store> stores = storeRepository.findByStatus("active");
         List<StoreDTO> storeDTOs = stores.stream().map(StoreDTO::toDTO).toList();
         return storeDTOs;
     }
 
     public StoreDTO getStoreById(Long id) {
-        Store store = storeRepository.findById(id).orElse(null);
+        Store store = storeRepository.findByIdOrElseThrow(id);
+        store.closeDownStore();
+
         return StoreDTO.toDTO(store);
     }
 
-    public void deletsStoreById(Long id) {
+    public void deleteStoreById(Long id) {
         storeRepository.deleteById(id);
     }
 
-    public void addStore(StoreDTO storeDTO) {
+    public void addStore(StoreDTO storeDTO, User user) {
         Store store = StoreDTO.toEntity(storeDTO);
+        store.setUser(user);
+        store.ownerCheck(user);
+
+        if (storeRepository.countByUserIdAndStatus(user.getId(), "active") > 2) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "가게는 3개 이상 생성할 수 없습니다.");
+        }
+
+        store.businessHourCheck();
+
         storeRepository.save(store);
     }
 
-    public void updateStore(long id, StoreDTO storeDTO) {
+    // todo: 수정 후 가게 주인인지 확인하는 예외처리 추가
+    public void updateStore(long id, StoreDTO storeDTO, User user) {
         Store store = StoreDTO.toEntity(storeDTO);
+        store.ownerCheck(user);
         store.setId(id); // id가 있으면 수정
+        store.setUser(user);
+
         storeRepository.save(store); // 저장(수정)
     }
 
@@ -56,11 +70,8 @@ public class StoreService {
         List<Orders> orders = orderRepository.findByStoreId(id);
         Store store = storeRepository.findByIdOrElseThrow(id);
 
-        if (!Objects.equals(user.getRole(), "OWNER")) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "owner 유저만 조회할 수 있습니다.");
-        } else if (!Objects.equals(user.getId(), store.getUser().getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인 가게의 주문만 조회할 수 있습니다.");
-        }
+        store.ownerCheck(user);
+        store.storeOwnerCheck(user);
 
         List<OrderResponseDto> orderResponseDtoList = new ArrayList<>();
 

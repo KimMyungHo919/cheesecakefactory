@@ -17,6 +17,7 @@ import java.time.LocalTime;
 
 public class StoreDTO {
     private Long id;
+    private Long userId;
     private String name;
     private Long minOrderPrice;
     private LocalTime openTime;
@@ -29,6 +30,7 @@ public class StoreDTO {
     public static StoreDTO toDTO(Store store) {
         return StoreDTO.builder()
                 .id(store.getId())
+                .userId(store.getUser().getId())
                 .name(store.getName())
                 .minOrderPrice(store.getMinOrderPrice())
                 .openTime(store.getOpenTime())
@@ -51,6 +53,4 @@ public class StoreDTO {
                 .status(dto.getStatus())
                 .build();
     }
-
-    // E
 }
