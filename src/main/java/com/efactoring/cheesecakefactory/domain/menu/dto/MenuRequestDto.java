@@ -14,7 +14,6 @@ public class MenuRequestDto {
     private final long price;
 
     @NotBlank(message = "상태를 입력해 주세요")
-    private final String status;
     private final MenuStatus status;
 
     public MenuRequestDto(String name, long price, MenuStatus status) {
