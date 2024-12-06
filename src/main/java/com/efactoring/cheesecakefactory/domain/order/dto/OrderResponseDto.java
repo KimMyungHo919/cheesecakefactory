@@ -1,5 +1,6 @@
 package com.efactoring.cheesecakefactory.domain.order.dto;
 
+import com.efactoring.cheesecakefactory.domain.model.OrderStatus;
 import com.efactoring.cheesecakefactory.domain.order.entity.Orders;
 import lombok.Getter;
 
@@ -13,11 +14,11 @@ public class OrderResponseDto {
     private final String menuName;
     private final Long menuPrice;
     private final Long totalPrice;
-    private final String status;
+    private final OrderStatus status;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    public OrderResponseDto(Long id, Long storeId, Long menuId, String menuName, Long menuPrice, Long totalPrice, String status, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public OrderResponseDto(Long id, Long storeId, Long menuId, String menuName, Long menuPrice, Long totalPrice, OrderStatus status, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.storeId = storeId;
         this.menuId = menuId;
