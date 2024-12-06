@@ -22,18 +22,35 @@
 ## 📂 프로젝트 구조
 
 ```
-src/
-├── main/
-│   ├── java/com/efactoring/cheesecakefactory/
-│   │   ├── domain/                # 주요 도메인 로직 (Menu, Order, Store, User 등)
-│   │   ├── config/                # 예외 처리 및 설정
-│   │   ├── controller/            # API Endpoint
-│   │   ├── dto/                   # 요청 및 응답 데이터 처리
-│   │   ├── repository/            # 데이터베이스 연동
-│   │   ├── service/               # 비즈니스 로직
-│   └── resources/
-│       └── application.properties # 설정 파일
-└── test/                          # 테스트 코드
+domain/
+├── base/                     
+├── exception/                
+├── menu/                     
+│   ├── controller/           
+│   ├── dto/                  
+│   ├── entity/              
+│   ├── repository/           
+│   └── service/              
+├── order/                    
+│   ├── controller/         
+│   ├── dto/                 
+│   ├── entity/              
+│   ├── repository/           
+│   └── service/         
+├── store/            
+│   ├── controller/     
+│   ├── dto/                
+│   ├── entity/              
+│   ├── repository/        
+│   └── service/           
+└── user/             
+    ├── config/            
+    ├── controller/           
+    ├── dto/                
+    ├── entity/             
+    ├── repository/    
+    └── service/  
+
 ```
 
 ---
