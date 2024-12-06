@@ -1,6 +1,6 @@
 package com.efactoring.cheesecakefactory.domain.user.controller;
 
-import com.efactoring.cheesecakefactory.domain.common.SuccessResponseDto;
+import com.efactoring.cheesecakefactory.domain.base.SuccessResponseDto;
 import com.efactoring.cheesecakefactory.domain.order.dto.OrderResponseDto;
 import com.efactoring.cheesecakefactory.domain.user.dto.DeleteUserRequestDto;
 import com.efactoring.cheesecakefactory.domain.user.dto.LoginRequestDto;

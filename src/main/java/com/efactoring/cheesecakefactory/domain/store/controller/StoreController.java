@@ -1,6 +1,6 @@
 package com.efactoring.cheesecakefactory.domain.store.controller;
 
-import com.efactoring.cheesecakefactory.domain.common.SuccessResponseDto;
+import com.efactoring.cheesecakefactory.domain.base.SuccessResponseDto;
 import com.efactoring.cheesecakefactory.domain.menu.dto.MenuResponseDto;
 import com.efactoring.cheesecakefactory.domain.order.dto.OrderResponseDto;
 import com.efactoring.cheesecakefactory.domain.store.dto.StoreDTO;
