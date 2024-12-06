@@ -6,15 +6,18 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+
 @Getter
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class ReviewResponseDto {
     private Long id;
-    private Long ordereId;
+    private Long orderId;
     private Long menuId;
+    private Long userId;
+    private Long storeId;
     private int rating;
-    private String  content;
+    private String content;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 
@@ -22,7 +25,9 @@ public class ReviewResponseDto {
         return new ReviewResponseDto(
                 review.getId(),
                 review.getOrders().getId(),
-                review.getMenu().getId(),
+                review.getMenuId(),
+                review.getStoreId(),
+                review.getUserId(),
                 review.getRating(),
                 review.getContent(),
                 review.getCreatedAt(),

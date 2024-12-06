@@ -16,5 +16,5 @@ public class ReviewRequestDto {
 
     @NotBlank(message = "리뷰 내용은 필수입니다.")
     @Size(min = 5, max = 1000, message = "리뷰 내용은 최소 5자에서 최대 1000자 사이여야 합니다.")
-    private String  content;
+    private String content;
 }
