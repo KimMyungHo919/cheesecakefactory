@@ -1,3 +1,7 @@
+# 치즈케이크를 안전하고 빠르게! 치즈케이크 배달 앱
+
+![image](https://github.com/user-attachments/assets/9de7035f-de34-4bf7-994a-a233dc24ae2d)
+
 # CheesecakeFactory
 
 2Factoring의 **CheesecakeFactory**는 치즈케이크 매장의 메뉴, 주문, 가게관리 기능을 지원하는 Spring Boot 기반 웹 애플리케이션 입니다.
