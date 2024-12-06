@@ -2,6 +2,7 @@ package com.efactoring.cheesecakefactory.domain.store.entity;
 
 import com.efactoring.cheesecakefactory.domain.base.BaseEntity;
 import com.efactoring.cheesecakefactory.domain.menu.entity.Menu;
+import com.efactoring.cheesecakefactory.domain.model.StoreStatus;
 import com.efactoring.cheesecakefactory.domain.model.UserRole;
 import com.efactoring.cheesecakefactory.domain.user.entity.User;
 import jakarta.persistence.CascadeType;
@@ -51,8 +52,7 @@ public class Store extends BaseEntity {
     @NotNull(message = "마감시간을 입력해 주세요.")
     private LocalTime closeTime;
 
-    @NotNull(message = "가게 상태를 입력해 주세요.")
-    private String status;
+    private StoreStatus status;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -91,7 +91,7 @@ public class Store extends BaseEntity {
     }
 
     public void closeDownStore() {
-        if (Objects.equals(status, "close")) {
+        if (Objects.equals(status, StoreStatus.CLOSE)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "폐업한 가게입니다.");
         }
     }

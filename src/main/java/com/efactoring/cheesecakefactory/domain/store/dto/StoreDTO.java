@@ -1,5 +1,6 @@
 package com.efactoring.cheesecakefactory.domain.store.dto;
 
+import com.efactoring.cheesecakefactory.domain.model.StoreStatus;
 import com.efactoring.cheesecakefactory.domain.store.entity.Store;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +23,7 @@ public class StoreDTO {
     private Long minOrderPrice;
     private LocalTime openTime;
     private LocalTime closeTime;
-    private String status;
+    private StoreStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
