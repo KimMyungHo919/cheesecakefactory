@@ -1,6 +1,7 @@
 package com.efactoring.cheesecakefactory.domain.user.controller;
 
 import com.efactoring.cheesecakefactory.domain.base.SuccessResponseDto;
+import com.efactoring.cheesecakefactory.domain.model.ReturnStatusCode;
 import com.efactoring.cheesecakefactory.domain.order.dto.OrderResponseDto;
 import com.efactoring.cheesecakefactory.domain.user.dto.DeleteUserRequestDto;
 import com.efactoring.cheesecakefactory.domain.user.dto.LoginRequestDto;
@@ -39,7 +40,7 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponseDto> registerUser(@RequestBody @Valid SignupRequestDto dto, HttpServletRequest request) {
+    public ResponseEntity<SuccessResponseDto> registerUser(@RequestBody @Valid SignupRequestDto dto, HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
         if (session != null) {
@@ -48,12 +49,15 @@ public class UserController {
 
         SignupResponseDto signupUser = userService.registerUser(dto);
 
-        return new ResponseEntity<>(signupUser, HttpStatus.CREATED);
+        ReturnStatusCode status = ReturnStatusCode.CREATED;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), signupUser);
+
+        return new ResponseEntity<>(successResponseDto, HttpStatus.CREATED);
     }
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto dto, HttpServletRequest request) {
+    public ResponseEntity<SuccessResponseDto> login(@RequestBody LoginRequestDto dto, HttpServletRequest request) {
 
         User user = userService.loginUser(dto.getEmail(), dto.getPassword());
 
@@ -68,22 +72,28 @@ public class UserController {
 
         LoginResponseDto loginUser = new LoginResponseDto(user);
 
-        return new ResponseEntity<>(loginUser, HttpStatus.OK);
+        ReturnStatusCode status = ReturnStatusCode.OK;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), loginUser);
+
+        return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
     }
 
     // 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
+    public ResponseEntity<SuccessResponseDto> logout(HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
         session.invalidate();
 
-        return new ResponseEntity<>("로그아웃 성공!", HttpStatus.OK);
+        ReturnStatusCode status = ReturnStatusCode.OK;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), "로그아웃 성공!");
+
+        return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
     }
 
     // 유저정보수정
     @PatchMapping("/{id}")
-    public ResponseEntity<PatchUserResponseDto> patchUser(@PathVariable Long id, @RequestBody @Valid PatchUserRequestDto dto, HttpServletRequest request) {
+    public ResponseEntity<SuccessResponseDto> patchUser(@PathVariable Long id, @RequestBody @Valid PatchUserRequestDto dto, HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
         User loginUser = (User) session.getAttribute("user");
@@ -94,12 +104,15 @@ public class UserController {
 
         PatchUserResponseDto patchUser = userService.patchUser(id, dto);
 
-        return new ResponseEntity<>(patchUser, HttpStatus.OK);
+        ReturnStatusCode status = ReturnStatusCode.OK;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), patchUser);
+
+        return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
     }
 
     // id 정보조회
     @GetMapping("/{id}")
-    public ResponseEntity<UserInfoResponseDto> getUserInfo(@PathVariable Long id, HttpServletRequest request) {
+    public ResponseEntity<SuccessResponseDto> getUserInfo(@PathVariable Long id, HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
         User loginUser = (User) session.getAttribute("user");
@@ -110,19 +123,25 @@ public class UserController {
 
         UserInfoResponseDto userInfo = userService.getUserInfo(id);
 
-        return new ResponseEntity<>(userInfo, HttpStatus.OK);
+        ReturnStatusCode status = ReturnStatusCode.OK;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), userInfo);
+
+        return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
     }
 
     // 회원탈퇴
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Void> userDelete(@PathVariable Long id, HttpServletRequest request, @RequestBody DeleteUserRequestDto dto) {
+    public ResponseEntity<SuccessResponseDto> userDelete(@PathVariable Long id, HttpServletRequest request, @RequestBody DeleteUserRequestDto dto) {
 
         userService.userStatusChange(id, dto.getPassword());
 
         HttpSession session = request.getSession(false);
         session.invalidate();
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        ReturnStatusCode status = ReturnStatusCode.OK;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), null);
+
+        return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
     }
 
     /**
@@ -139,7 +158,8 @@ public class UserController {
     ) {
         List<OrderResponseDto> orderResponseDtoList = userService.getUserOrder(id, user);
 
-        SuccessResponseDto successResponseDto = new SuccessResponseDto("OK", 200, orderResponseDtoList);
+        ReturnStatusCode status = ReturnStatusCode.OK;
+        SuccessResponseDto successResponseDto = new SuccessResponseDto(status.name(), status.getCode(), orderResponseDtoList);
 
         return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
     }
