@@ -41,8 +41,8 @@ public class OrderService {
         Long totalPrice = orderRequestDto.getQuantity() * menu.getPrice();
 
         LocalTime now = LocalTime.now();
-        LocalTime open = store.getOpenTime().toLocalTime();
-        LocalTime close = store.getCloseTime().toLocalTime();
+        LocalTime open = store.getOpenTime();
+        LocalTime close = store.getCloseTime();
 
         if (!menu.getIsActive()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "이미 삭제된 메뉴입니다.");
