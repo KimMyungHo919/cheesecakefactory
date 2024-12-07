@@ -117,7 +117,7 @@ spring.jpa.hibernate.ddl-auto=update
 ## 🖥️ 와이어프레임 및 시연 영상
 
 - **프로토타입**: [프로토타입 링크](https://miro.com/welcomeonboard/QisrNDVVdVk3SVU5QnFlU3lGQ2RSczlVLzFQZGk0WTU2dmVUa[…]ZTHFsMXp4ckdGb21KL25JVXpHUHJLaFQhZQ==?share_link_id=462330736574)
-- **시연 영상**: [시연 영상 링크]()
+- **시연 영상**: [시연 영상 링크](https://www.youtube.com/watch?v=LXWWxmwdY1M)
 
 ---
 
