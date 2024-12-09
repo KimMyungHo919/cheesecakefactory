@@ -1,5 +1,6 @@
 package com.efactoring.cheesecakefactory.domain.review.service;
 
+import com.efactoring.cheesecakefactory.domain.model.OrderStatus;
 import com.efactoring.cheesecakefactory.domain.order.entity.Orders;
 import com.efactoring.cheesecakefactory.domain.order.repository.OrderRepository;
 import com.efactoring.cheesecakefactory.domain.review.dto.ReviewRequestDto;
@@ -38,7 +39,7 @@ public class ReviewService {
         if (store == null) {
             throw new IllegalArgumentException("해당 주문과 연결된 가게가 존재하지 않습니다.");
         }
-        if (!order.getStatus().equals("completed")) {
+        if (!order.getStatus().equals(OrderStatus.COMPLETED)) {
             throw new IllegalArgumentException("완료된 주문에만 리뷰 작성이 가능합니다.");
         }
 
