@@ -11,10 +11,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
-import lombok.Setter;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Objects;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "user")
 public class User extends BaseEntity {
@@ -54,5 +56,17 @@ public class User extends BaseEntity {
         this.address = address;
         this.role = role;
         this.status = status;
+    }
+
+    public void deleteUser() {
+        if (Objects.equals(this.status, UserStatus.DELETED)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "이미 탈퇴한 유저입니다.");
+        }
+        this.status = UserStatus.DELETED;
+    }
+
+    public void patchUser(String changeName, String newPassword) {
+        this.name = changeName;
+        this.password = newPassword;
     }
 }

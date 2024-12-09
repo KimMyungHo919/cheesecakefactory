@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/users")
@@ -38,10 +39,18 @@ public class UserController {
 
     private final UserService userService;
 
-    // 회원가입
+    /**
+     * 회원가입
+     *
+     * @param dto
+     * @param request
+     * @return SignupResponseDto
+     */
     @PostMapping("/signup")
-    public ResponseEntity<SuccessResponseDto> registerUser(@RequestBody @Valid SignupRequestDto dto, HttpServletRequest request) {
-
+    public ResponseEntity<SuccessResponseDto> registerUser(
+            @RequestBody @Valid SignupRequestDto dto,
+            HttpServletRequest request
+    ) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "로그아웃 먼저 해주세요.");
@@ -55,10 +64,18 @@ public class UserController {
         return new ResponseEntity<>(successResponseDto, HttpStatus.CREATED);
     }
 
-    // 로그인
+    /**
+     * 로그인
+     *
+     * @param dto
+     * @param request
+     * @return LoginResponseDto
+     */
     @PostMapping("/login")
-    public ResponseEntity<SuccessResponseDto> login(@RequestBody LoginRequestDto dto, HttpServletRequest request) {
-
+    public ResponseEntity<SuccessResponseDto> login(
+            @RequestBody LoginRequestDto dto,
+            HttpServletRequest request
+    ) {
         User user = userService.loginUser(dto.getEmail(), dto.getPassword());
 
         HttpSession session = request.getSession(false);
@@ -78,10 +95,14 @@ public class UserController {
         return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
     }
 
-    // 로그아웃
+    /**
+     * 로그아웃
+     *
+     * @param request
+     * @return String
+     */
     @PostMapping("/logout")
     public ResponseEntity<SuccessResponseDto> logout(HttpServletRequest request) {
-
         HttpSession session = request.getSession(false);
         session.invalidate();
 
@@ -91,14 +112,21 @@ public class UserController {
         return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
     }
 
-    // 유저정보수정
+    /**
+     * 유저정보수정 (name,password)
+     *
+     * @param id
+     * @param dto
+     * @param user
+     * @return PatchUserResponseDto
+     */
     @PatchMapping("/{id}")
-    public ResponseEntity<SuccessResponseDto> patchUser(@PathVariable Long id, @RequestBody @Valid PatchUserRequestDto dto, HttpServletRequest request) {
-
-        HttpSession session = request.getSession(false);
-        User loginUser = (User) session.getAttribute("user");
-
-        if (!loginUser.getId().equals(id)) {
+    public ResponseEntity<SuccessResponseDto> patchUser(
+            @PathVariable Long id,
+            @RequestBody @Valid PatchUserRequestDto dto,
+            @SessionAttribute(name = "user") User user
+    ) {
+        if (!Objects.equals(id, user.getId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "자신의 정보만 수정가능합니다. 아이디를 확인해주세요.");
         }
 
@@ -110,14 +138,19 @@ public class UserController {
         return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
     }
 
-    // id 정보조회
+    /**
+     * 유저id로 정보조회
+     *
+     * @param id
+     * @param user
+     * @return UserInfoResponseDto
+     */
     @GetMapping("/{id}")
-    public ResponseEntity<SuccessResponseDto> getUserInfo(@PathVariable Long id, HttpServletRequest request) {
-
-        HttpSession session = request.getSession(false);
-        User loginUser = (User) session.getAttribute("user");
-
-        if (!loginUser.getId().equals(id)) {
+    public ResponseEntity<SuccessResponseDto> getUserInfo(
+            @PathVariable Long id,
+            @SessionAttribute(name = "user") User user
+    ) {
+        if (!Objects.equals(user.getId(), id)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "자신의 정보만 조회가능합니다. 아이디를 확인해주세요.");
         }
 
@@ -129,10 +162,19 @@ public class UserController {
         return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
     }
 
-    // 회원탈퇴
+    /**
+     * 유저탈퇴. 상태변경으로 처리
+     *
+     * @param id
+     * @param dto
+     * @param request
+     */
     @PatchMapping("/{id}/status")
-    public ResponseEntity<SuccessResponseDto> userDelete(@PathVariable Long id, HttpServletRequest request, @RequestBody DeleteUserRequestDto dto) {
-
+    public ResponseEntity<SuccessResponseDto> userDelete(
+            @PathVariable Long id,
+            @RequestBody DeleteUserRequestDto dto,
+            HttpServletRequest request
+    ) {
         userService.userStatusChange(id, dto.getPassword());
 
         HttpSession session = request.getSession(false);
