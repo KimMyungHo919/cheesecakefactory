@@ -37,13 +37,14 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다.");
         }
 
-        User user = new User();
-        user.setName(dto.getName());
-        user.setEmail(dto.getEmail());
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setStatus(UserStatus.ACTIVE);
-        user.setRole(dto.getRole());
-        user.setAddress(dto.getAddress());
+        User user = new User(
+                dto.getName(),
+                dto.getEmail(),
+                passwordEncoder.encode(dto.getPassword()),
+                dto.getAddress(),
+                dto.getRole(),
+                UserStatus.ACTIVE
+        );
 
         userRepository.save(user);
 
@@ -80,8 +81,7 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "현재 비밀번호와 수정할 비밀번호가 같습니다.");
         }
 
-        user.setName(dto.getName());
-        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        user.patchUser(dto.getName(), passwordEncoder.encode(dto.getNewPassword()));
 
         userRepository.save(user);
 
@@ -104,11 +104,8 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호를 다시 확인해주세요.");
         }
 
-        if (Objects.equals(user.getStatus(), UserStatus.DELETED)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "이미 탈퇴한 유저입니다.");
-        }
+        user.deleteUser();
 
-        user.setStatus(UserStatus.DELETED);
         userRepository.save(user);
     }
 
